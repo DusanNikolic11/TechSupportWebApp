@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.452
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IEPProjekat", "IEPProjekat\IEPProjekat.csproj", "{6AA4E3A6-C47A-454A-9F6C-569FB3CA48EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6AA4E3A6-C47A-454A-9F6C-569FB3CA48EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AA4E3A6-C47A-454A-9F6C-569FB3CA48EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AA4E3A6-C47A-454A-9F6C-569FB3CA48EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AA4E3A6-C47A-454A-9F6C-569FB3CA48EA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CB20FEA3-899B-4801-89B6-95CB72753091}
+	EndGlobalSection
+EndGlobal

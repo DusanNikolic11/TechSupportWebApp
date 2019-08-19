@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IEP2019-Web.config Connection String" description="IEP2019 Connection String used in web.config by the application to access the database." defaultValue="Server=tcp:iep2019server.database.windows.net,1433;Initial Catalog=IEP2019;Persist Security Info=False;User ID=dusannikolic11;Password=FarmerJoe247;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\Windows\ 10\\Desktop\\IEPProjekat\\IEPProjekat\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='IEP2019']/@connectionString" />
+  </parameter>
+</parameters>
