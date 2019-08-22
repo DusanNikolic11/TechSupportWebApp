@@ -9,22 +9,21 @@ namespace IEPProjekat.Models {
     [Table("Users")]
     public class User {
         [Required]
-        [Key]
-        private int Id { get; set; }
+        public int Id { get; set; }
         [Required]
-        private String Name { get; set; }
+        public String Name { get; set; }
         [Required]
-        private String LastName { get; set; }
+        public String LastName { get; set; }
         [Required]
-        private String Mail { get; set; }
+        public String Mail { get; set; }
         [Required]
-        private String Password { get; set; }
+        public String Password { get; set; }
         [Required]
-        private int Tokens { get; set; }
+        public int Tokens { get; set; }
         [Required]
-        private String Status { get; set; }
+        public String Status { get; set; }
         [Required]
-        private String Role { get; set; }
+        public String Role { get; set; }
         public virtual ICollection<Question> Questions {get;set;}
         public virtual ICollection<Reply> Replies { get; set; }
         public virtual ICollection<Grade> Grades { get; set; }

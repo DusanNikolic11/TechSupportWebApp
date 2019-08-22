@@ -1,0 +1,29 @@
+﻿@model IEPProjekat.Models.User
+@{
+    ViewBag.Title = "profilePage";
+    Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
+}
+
+    <form>
+        <div>
+            <label>First Name</label>
+            <input type="text" readonly value="@ViewBag.User.Name">
+        </div>
+        <div>
+            <label>Last name</label>
+            <input type="text" readonly value="@ViewBag.User.LastName">
+        </div>
+        <div>
+            <label>Email</label>
+            <input type="text" readonly value="@ViewBag.User.Mail">
+        </div>
+        <div>
+            <label>Tokens</label>
+            <input type="text" readonly value="@ViewBag.User.Tokens">
+        </div>
+        <div>
+            <label>Role</label>
+            <input type="text" readonly value="@ViewBag.User.Role">
+        </div>
+    </form>
+

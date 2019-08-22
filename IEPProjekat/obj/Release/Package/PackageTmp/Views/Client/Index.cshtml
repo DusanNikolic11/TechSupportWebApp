@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
+}
+
+<h2>Index</h2>
+
+    <div class="row">
+        <div class="col-3">
+            <button onclick="location.href='@Url.Action("goToAskQuestion", "Client")'" type="button" class="btn btn-primary">Ask a question!</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-5">
+            <img src="@Url.Content("~/" + ViewBag.picture)" alt="Failed to load image" />Ova slika..
+        </div>
+    </div>

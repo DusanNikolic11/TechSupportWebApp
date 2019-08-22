@@ -1,0 +1,54 @@
+﻿
+@{
+    ViewBag.Title = "CreateQuestion";
+    Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
+}
+
+    <div class="row">
+        <div class="offset-3 col-6">
+            <form name="questionform" action="submitQuestion" method="post" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-3">
+                        <label>Title</label>
+                    </div>
+                    <div class="col-9 form-group">
+                        <input style="width:100%;" name="title" type="text" required placeholder="Question title here..">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <label>Select a category that your question belongs to</label>
+                    </div>
+                    <div class="col-6 form-group">
+                        <select name="category">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <label>Question:</label>
+                    </div>
+                    <div class="col-9 form-group">
+                        <textarea style="width:100%;" required rows="5" name="questiontext"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 form-group">
+                        <p>Upload one or more files using this form:</p>
+                        <input type="file" name="files">
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-6 offset-4">
+                        <button type="submit" class="btn btn-primary">Submit question!</button>
+                    </div>
+                </div>  
+            </form>
+        </div>
+    </div>
+

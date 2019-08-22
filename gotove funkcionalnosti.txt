@@ -1,0 +1,4 @@
+ZA SVE JE POTREBNO SREDITI VIEWOVE JER SU RADJENI SAMO DA BI RADILE FUNKCIONALNOSTI
+1,2 - delimicno gotove, treba da se odrade sve provere itd
+6, 12 - delimicno gotove srediti formice
+

@@ -184,3 +184,22 @@ C:\Users\dusan\Desktop\IEPProjekat\IEPProjekat\obj\Debug\IEPProjekat.Migrations.
 C:\Users\dusan\Desktop\IEPProjekat\IEPProjekat\obj\Debug\IEPProjekat.csproj.GenerateResource.Cache
 C:\Users\dusan\Desktop\IEPProjekat\IEPProjekat\obj\Debug\IEPProjekat.dll
 C:\Users\dusan\Desktop\IEPProjekat\IEPProjekat\obj\Debug\IEPProjekat.pdb
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\obj\Debug\IEPProjekat.Migrations.UserTableDonePossibleModificationsCanBeDone.resources
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\obj\Debug\IEPProjekat.Migrations.QuestionClassPopulatedWithFieldsCanBeModified.resources
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\obj\Debug\IEPProjekat.Migrations.GradeClassPopulatedCanBeModified.resources
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\obj\Debug\IEPProjekat.Migrations.ChannelClassPopulatedCanBeModified.resources
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\obj\Debug\IEPProjekat.Migrations.ModifiedQuestionClassAddedDateTimesForCreationAndLock.resources
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.AspNetCore.Http.Abstractions.dll
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.AspNetCore.Http.Features.dll
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.AspNetCore.Mvc.Abstractions.dll
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.AspNetCore.Routing.Abstractions.dll
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.Extensions.Primitives.dll
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.Net.Http.Headers.dll
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\System.Text.Encodings.Web.dll
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.AspNetCore.Http.Abstractions.xml
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.AspNetCore.Http.Features.xml
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.AspNetCore.Mvc.Abstractions.xml
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.AspNetCore.Routing.Abstractions.xml
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.Extensions.Primitives.xml
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.Net.Http.Headers.xml
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\System.Text.Encodings.Web.xml
