@@ -10,6 +10,8 @@ namespace IEPProjekat.Models {
     public class Reply {
         [Required]
         public int Id { get; set; }
+        [Required]
+        public String Text { get; set; }
         public virtual Question ReplyToWhichQuestion { get; set; }
         public virtual User ReplyAuthor { get; set; }
         [Required]

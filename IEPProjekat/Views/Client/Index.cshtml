@@ -1,9 +1,13 @@
-﻿
+﻿@model List<IEPProjekat.Models.Question>
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
 }
-
+    <script>
+        function CallChangefunc(val) {
+            window.location.href = "/Client/filterCategory?category=" + val;
+        }
+    </script>
 <h2>Index</h2>
 
     <div class="row">
@@ -12,7 +16,28 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-5">
-            <img src="@Url.Content("~/" + ViewBag.picture)" alt="Failed to load image" />Ova slika..
+        <div class="col">
+            @Html.DropDownList("category", new SelectListItem[]
+            {
+                new SelectListItem() { Text = "All categories", Value = "0" },
+                new SelectListItem() { Text = "1", Value = "1" },
+                new SelectListItem() { Text = "2", Value = "2" },
+                new SelectListItem() { Text = "3", Value = "3" },
+                new SelectListItem() { Text = "4", Value = "4" }
+            },
+            new { @onchange = "CallChangefunc(this.value)" })
         </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            @{ 
+                int index = 0;
+                foreach (var question in ViewBag.Questions)
+                {
+                    Html.RenderPartial("~/Views/Shared/OneQuestion.cshtml", new ViewDataDictionary(question));
+                    index++;
+                }
+            }
+            
+            </div>
     </div>

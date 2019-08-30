@@ -198,10 +198,20 @@
     <Compile Include="Migrations\201908221317357_Modified-Question-Class-Added-DateTimes-For-Creation-And-Lock.Designer.cs">
       <DependentUpon>201908221317357_Modified-Question-Class-Added-DateTimes-For-Creation-And-Lock.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201908251451542_Added-Text-Field-To-Reply-Table.cs" />
+    <Compile Include="Migrations\201908251451542_Added-Text-Field-To-Reply-Table.Designer.cs">
+      <DependentUpon>201908251451542_Added-Text-Field-To-Reply-Table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201908291757517_changed-grades-to-add-ids.cs" />
+    <Compile Include="Migrations\201908291757517_changed-grades-to-add-ids.Designer.cs">
+      <DependentUpon>201908291757517_changed-grades-to-add-ids.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Channel.cs" />
+    <Compile Include="Models\DateComparer.cs" />
     <Compile Include="Models\Grade.cs" />
     <Compile Include="Models\Question.cs" />
+    <Compile Include="Models\QuestionAnswersClass.cs" />
     <Compile Include="Models\Reply.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -257,6 +267,9 @@
     <Content Include="Views\Shared\profilePage.cshtml" />
     <Content Include="Views\Agent\Index.cshtml" />
     <Content Include="Views\Client\CreateQuestion.cshtml" />
+    <Content Include="Views\Shared\OneQuestion.cshtml" />
+    <Content Include="Views\Shared\questionThread.cshtml" />
+    <Content Include="Views\Shared\OneReply.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -288,6 +301,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201908221317357_Modified-Question-Class-Added-DateTimes-For-Creation-And-Lock.resx">
       <DependentUpon>201908221317357_Modified-Question-Class-Added-DateTimes-For-Creation-And-Lock.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201908251451542_Added-Text-Field-To-Reply-Table.resx">
+      <DependentUpon>201908251451542_Added-Text-Field-To-Reply-Table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201908291757517_changed-grades-to-add-ids.resx">
+      <DependentUpon>201908291757517_changed-grades-to-add-ids.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

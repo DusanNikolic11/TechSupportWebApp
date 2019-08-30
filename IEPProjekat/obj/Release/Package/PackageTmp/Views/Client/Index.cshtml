@@ -1,4 +1,4 @@
-﻿
+﻿@model List<IEPProjekat.Models.Question>
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
@@ -12,7 +12,13 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-5">
-            <img src="@Url.Content("~/" + ViewBag.picture)" alt="Failed to load image" />Ova slika..
-        </div>
+        <div class="col">
+            @{ 
+                foreach (var question in ViewBag.Questions)
+                {
+                    Html.RenderPartial("~/Views/Shared/OneQuestion.cshtml", new ViewDataDictionary(question));
+                }
+            }
+            
+            </div>
     </div>

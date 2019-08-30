@@ -11,10 +11,12 @@ namespace IEPProjekat.Models {
         [Required]
         public int Id { get; set; }
         [Index("IX_UserReplyUQ", 1, IsUnique=true)]
-        public User User { get; set; }
+        public int UserId { get; set; }
         [Index("IX_UserReplyUQ", 2, IsUnique = true)]
-        public Reply Reply { get; set; }
+        public int ReplyId { get; set; }
         [Required]
         public int Value { get; set; }
+        public User User;
+        public Reply Reply;
     }
 }

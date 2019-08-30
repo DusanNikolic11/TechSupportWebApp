@@ -22,8 +22,12 @@ namespace IEPProjekat.Controllers
         // GET: Client
         public ActionResult Index()
         {
-            ViewBag.picture = db.questions.Find(3).Picture;
-            return View(db.users.ToList());
+            List<Question> questions = (List<Question>)TempData["list"];
+            TempData.Remove("list");
+            if (questions==null)
+                questions = db.questions.ToList();
+            ViewBag.questions = questions;
+            return View();
         }
 
         public ActionResult goToMyProfile()
@@ -42,6 +46,7 @@ namespace IEPProjekat.Controllers
         public ActionResult submitQuestion(String title, String category, String questiontext)
         {
             String fileLocation="";
+            String picname = "";
             if (Request.Files.Count > 0)
             {
                 HttpPostedFileBase file = Request.Files[0];
@@ -53,11 +58,62 @@ namespace IEPProjekat.Controllers
                     file.SaveAs(fileLocation);
                 }
             }
+            if (fileLocation == "")
+                picname = "defaultPic.jpg";
+            else
+                picname = Request.Files[0].FileName;
             DateTime dt = DateTime.Now;
-            Question q = new Question { Title = title, Text = questiontext, Picture = Request.Files[0].FileName, Category = category, Status = 1, Author = (User)Session["user"], CreationTime = dt };
+            Question q = new Question { Title = title, Text = questiontext, Picture = picname, Category = category, Status = 1, Author = (User)Session["user"], CreationTime = dt };
             db.questions.Add(q);
             db.SaveChanges();
-            return View("Index");
+            return Redirect("Index");
+        }
+
+        public ActionResult openQuestion(int index)
+        {
+            Question question = db.questions.ToList().Find(x => x.Id == index);
+            List<Reply> replies = question.Replies.ToList();
+            QuestionAnswersClass q = new QuestionAnswersClass();
+            q.question = question;
+            q.allReplies = replies;
+            ViewBag.returnVal = q;
+            return View("questionThread");
+        }
+
+        [HttpGet]
+        public ActionResult giveReply(String text, int questionId)
+        {
+            DateTime dt = DateTime.Now;
+            Question question = db.questions.ToList().Find(x => x.Id == questionId);
+            Reply reply = new Reply() { Text = text, ReplyToWhichQuestion = question, ReplyAuthor = (User)Session["user"], Moment = dt, ReplyToWhichReply = null, PlusGrades = 0, MinusGrades = 0, MyChannel = null };
+            db.replies.Add(reply);
+            db.SaveChanges();
+            return RedirectToAction("openQuestion", new { index = questionId });
+        }
+
+        public ActionResult filterCategory(String category)
+        {
+            List<Question> questions = db.questions.ToList().FindAll(x => x.Category.Equals(category));
+            TempData["list"] = questions;
+            return RedirectToAction("Index");
+        }
+
+        public void rateReply(int replyId, int value)
+        {
+            Reply reply = db.replies.ToList().Find(x => x.Id == replyId);
+            if (value==1)
+            {
+                reply.PlusGrades++;
+            }
+            else
+            {
+                reply.MinusGrades++;
+            }
+            Grade g = new Grade() {ReplyId=reply.Id, UserId=((User)Session["user"]).Id, Reply = reply, User = (User)Session["user"], Value = value };
+            reply.Grades.Add(g);
+            ((User)Session["user"]).Grades.Add(g);
+            db.grades.Add(g);
+            db.SaveChanges();
         }
 
     }

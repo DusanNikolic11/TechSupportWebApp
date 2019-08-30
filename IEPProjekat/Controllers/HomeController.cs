@@ -18,6 +18,11 @@ namespace IEPProjekat.Controllers
         }
         public ActionResult Index()
         {
+            List<Question> questions = (List<Question>)TempData["list"];
+            TempData.Remove("list");
+            if (questions == null)
+                questions = db.questions.ToList();
+            ViewBag.questions = questions;
             return View();
         }
 
@@ -80,6 +85,61 @@ namespace IEPProjekat.Controllers
                 return RedirectToAction("Index", "Client");
             }
             return View("Login");
+        }
+
+        public ActionResult openQuestion(int index)
+        {
+            Question question = db.questions.ToList().Find(x => x.Id == index);
+            List<Reply> replies = question.Replies.ToList();
+            QuestionAnswersClass q = new QuestionAnswersClass();
+            q.question = question;
+            q.allReplies = replies;
+            ViewBag.returnVal = q;
+            return View("questionThread");
+        }
+
+        [HttpGet]
+        public ActionResult searchByWord(String text)
+        {
+            List<Question> questionss = db.questions.ToList().FindAll(x => x.Text.Contains(text));
+            TempData["list"] = questionss;
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult filterReplies(String category, int question)
+        {
+            Question questionn = db.questions.ToList().Find(x => x.Id == question);
+            List<Reply> replies = db.replies.ToList().FindAll(x => x.ReplyToWhichQuestion.Id == questionn.Id);
+            switch (category)
+            {
+                case "0": replies.Sort(new DateComparer()); break;
+                case "1": { replies.Sort(new DateComparer()); replies.Reverse(); } break;
+                case "2":
+                    replies.Sort(delegate (Reply x, Reply y)
+          {
+              if (x.PlusGrades > y.PlusGrades)
+                  return 1;
+              else if (y.PlusGrades > x.PlusGrades)
+                  return -1;
+              else
+                  return 0;
+          }); break;
+                case "3":
+                    replies.Sort(delegate (Reply x, Reply y)
+              {
+                  if (x.MinusGrades > y.MinusGrades)
+                      return 1;
+                  else if (y.MinusGrades > x.MinusGrades)
+                      return -1;
+                  else
+                      return 0;
+              }); break;
+            }
+            QuestionAnswersClass q = new QuestionAnswersClass();
+            q.question = questionn;
+            q.allReplies = replies;
+            ViewBag.returnVal = q;
+            return View("questionThread");
         }
     }
 }
