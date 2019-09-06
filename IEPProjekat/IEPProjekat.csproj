@@ -206,12 +206,19 @@
     <Compile Include="Migrations\201908291757517_changed-grades-to-add-ids.Designer.cs">
       <DependentUpon>201908291757517_changed-grades-to-add-ids.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201909021854232_added-categories-tableAndChangedQuestionsToHaveCategoriesAsFieldInsteadOfStringForCategories.cs" />
+    <Compile Include="Migrations\201909021854232_added-categories-tableAndChangedQuestionsToHaveCategoriesAsFieldInsteadOfStringForCategories.Designer.cs">
+      <DependentUpon>201909021854232_added-categories-tableAndChangedQuestionsToHaveCategoriesAsFieldInsteadOfStringForCategories.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Channel.cs" />
     <Compile Include="Models\DateComparer.cs" />
     <Compile Include="Models\Grade.cs" />
     <Compile Include="Models\Question.cs" />
     <Compile Include="Models\QuestionAnswersClass.cs" />
+    <Compile Include="Models\QuestionCategories.cs" />
+    <Compile Include="Models\QuestionCategoriesClass.cs" />
+    <Compile Include="Models\QuestionPager.cs" />
     <Compile Include="Models\Reply.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -307,6 +314,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201908291757517_changed-grades-to-add-ids.resx">
       <DependentUpon>201908291757517_changed-grades-to-add-ids.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909021854232_added-categories-tableAndChangedQuestionsToHaveCategoriesAsFieldInsteadOfStringForCategories.resx">
+      <DependentUpon>201909021854232_added-categories-tableAndChangedQuestionsToHaveCategoriesAsFieldInsteadOfStringForCategories.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

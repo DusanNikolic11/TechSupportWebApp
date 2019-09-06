@@ -16,13 +16,42 @@ namespace IEPProjekat.Controllers
         {
             return db;
         }
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
-            List<Question> questions = (List<Question>)TempData["list"];
-            TempData.Remove("list");
+            List<Question> questions = (List<Question>)TempData.Peek("list");
+            String categorySelected = (String)TempData.Peek("category");
+            if (categorySelected == "All categories")
+            {
+                TempData.Remove("list");
+                TempData.Remove("category");
+            }
             if (questions == null)
                 questions = db.questions.ToList();
-            ViewBag.questions = questions;
+            QuestionCategoriesClass qc = new QuestionCategoriesClass();
+            qc.questions = questions;
+            List<String> categories = new List<String>();
+            categories.Add("All categories");
+            foreach (QuestionCategories category in db.categories.ToList())
+            {
+                categories.Add(category.Category);
+            }
+            qc.categories = categories;
+            if (categorySelected!=null)
+            {
+                qc.selected = categorySelected;
+            }
+            else
+            {
+                qc.selected = "All categories";
+            }
+            Pager pager = new Pager(questions.ToList().Count, page);
+            QuestionPager questpager = new QuestionPager
+            {
+                Items = questions.ToList().Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToList(),
+                Pager = pager
+            };
+            qc.qp = questpager;
+            ViewBag.Questions = qc;
             return View();
         }
 
@@ -101,8 +130,33 @@ namespace IEPProjekat.Controllers
         [HttpGet]
         public ActionResult searchByWord(String text)
         {
-            List<Question> questionss = db.questions.ToList().FindAll(x => x.Text.Contains(text));
+            List<Question> questionss;
+            if (TempData["list"]==null)
+            {
+                questionss = db.questions.ToList().FindAll(x => x.Text.Contains(text)==true);
+            }
+            else
+            {
+                questionss = ((List<Question>)TempData.Peek("list")).FindAll(x => x.Text.Contains(text)==true);
+            }
             TempData["list"] = questionss;
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult filterCategory(String category)
+        {
+            List<Question> questions=null;
+            if (category == "My questions")
+            {
+                questions = db.questions.ToList().FindAll(x => x.Author.Name.Equals(((User)Session["user"]).Name) && x.Author.LastName.Equals(((User)Session["user"]).LastName));
+                TempData["list"] = questions;
+            }
+            else if (category!= "All categories")
+            {
+                questions = db.questions.ToList().FindAll(x => x.Category.Category.Equals(category));
+            }
+            TempData["list"] = questions;
+            TempData["category"] = category;
             return RedirectToAction("Index");
         }
 

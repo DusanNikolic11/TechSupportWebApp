@@ -205,3 +205,4 @@ C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.Net.Http.Heade
 C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\System.Text.Encodings.Web.xml
 C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\obj\Debug\IEPProjekat.Migrations.AddedTextFieldToReplyTable.resources
 C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\obj\Debug\IEPProjekat.Migrations.changedgradestoaddids.resources
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\obj\Debug\IEPProjekat.Migrations.addedcategoriestableAndChangedQuestionsToHaveCategoriesAsFieldInsteadOfStringForCategories.resources

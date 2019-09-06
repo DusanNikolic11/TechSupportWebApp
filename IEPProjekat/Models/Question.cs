@@ -16,7 +16,7 @@ namespace IEPProjekat.Models {
         public String Text { get; set; }
         public String Picture { get; set; }
         [Required]
-        public String Category { get; set; }
+        public QuestionCategories Category { get; set; }
         [Required]
         public int Status { get; set; }
         [Required]
