@@ -1,9 +1,13 @@
-﻿@model List<IEPProjekat.Models.Question>
+﻿@model List<IEPProjekat.Models.QuestionCategoriesClass>
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
 }
-
+    <script>
+        function CallChangefunc(val) {
+            window.location.href = "/Client/filterCategory?category=" + val;
+        }
+    </script>
 <h2>Index</h2>
 
     <div class="row">
@@ -13,12 +17,52 @@
     </div>
     <div class="row">
         <div class="col">
-            @{ 
-                foreach (var question in ViewBag.Questions)
+            @Html.DropDownList("category", new SelectList(ViewBag.Questions.categories, ViewBag.Questions.selected),
+            new { @onchange = "CallChangefunc(this.value)" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            @{
+                int index = 0;
+                foreach (var question in ViewBag.Questions.qp.Items)
                 {
                     Html.RenderPartial("~/Views/Shared/OneQuestion.cshtml", new ViewDataDictionary(question));
+                    index++;
                 }
             }
-            
-            </div>
+
+            @if (ViewBag.Questions.qp.Pager.EndPage > 1)
+            {
+                <ul class="pagination">
+                    @if (ViewBag.Questions.qp.Pager.CurrentPage > 1)
+                    {
+                        <li>
+                            <a href="~/Client/Index">First</a>
+                        </li>
+                        <li>
+                            <a href="~/Client/Index?page=@(ViewBag.Questions.qp.Pager.CurrentPage - 1)">Previous</a>
+                        </li>
+                    }
+
+                    @for (var page = ViewBag.Questions.qp.Pager.StartPage; page <= ViewBag.Questions.qp.Pager.EndPage; page++)
+                    {
+                        <li class="@(page == ViewBag.Questions.qp.Pager.CurrentPage ? "active" : "")">
+                            <a href="~/Client/Index?page=@page">@page</a>
+                        </li>
+                    }
+
+                    @if (ViewBag.Questions.qp.Pager.CurrentPage < ViewBag.Questions.qp.Pager.TotalPages)
+                    {
+                        <li>
+                            <a href="~/Client/Index?page=@(ViewBag.Questions.qp.Pager.CurrentPage + 1)">Next</a>
+                        </li>
+                        <li>
+                            <a href="~/Client/Index?page=@(ViewBag.Questions.qp.Pager.TotalPages)">Last</a>
+                        </li>
+                    }
+                </ul>
+            }
+
+        </div>
     </div>

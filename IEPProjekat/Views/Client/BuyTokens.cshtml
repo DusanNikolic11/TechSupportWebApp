@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewBag.Title = "BuyTokens";
+    Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
+}
+
+<style>
+    .card-img-top {
+        height: 150px;
+        width: 100%;
+    }
+</style>
+<div class="card-deck row" style="margin-top:10%;">
+    <div class="card col-sm-2">
+        <img src="~/Images/silver.png" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h3 class="card-title">Silver</h3>
+            <br />
+            <p style="font-size:22px;" class="glyphicon glyphicon-btc"></p>
+            <br />
+            <br />
+            <p style="font-size:22px;" class="glyphicon glyphicon-euro"></p>
+            <br />
+            <br />
+            <button type="submit" value="silver" class="btn btn-success"
+                    onclick="location.href='@Url.Action("buyTokens", "Client" , new { id=1 })'">
+                Buy
+            </button>
+
+        </div>
+    </div>
+    <div class="card col-sm-2 col-md-offset-1">
+        <img src="~/Images/gold.png" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h3 class="card-title">Gold</h3>
+            <br />
+            <p style="font-size:22px;" class="glyphicon glyphicon-btc"></p>
+            <br />
+            <br />
+            <p style="font-size:22px;" class="glyphicon glyphicon-euro"></p>
+            <br />
+            <br />
+            <button type="submit" value="silver" class="btn btn-success"
+                    onclick="location.href='@Url.Action("Purchase", "SysDefs" , new { id=2 })'">
+                Buy
+            </button>
+        </div>
+    </div>
+    <div class="card col-sm-2 col-md-offset-1">
+        <img src="~/Images/platinum.jpg" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h3 class="card-title">Platinum</h3>
+            <br />
+            <p style="font-size:22px;" class="glyphicon glyphicon-btc"></p>
+            <br />
+            <br />
+            <p style="font-size:22px;" class="glyphicon glyphicon-euro"></p>
+            <br />
+            <br />
+            <button type="submit" value="silver" class="btn btn-success"
+                    onclick="location.href='@Url.Action("Purchase", "SysDefs" , new { id=3 })'">
+                Buy
+            </button>
+        </div>
+    </div>
+</div>
+

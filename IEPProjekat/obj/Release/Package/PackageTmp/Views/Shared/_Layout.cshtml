@@ -22,6 +22,10 @@
                     <a class="nav-link" href="#">@Html.ActionLink("Login", "goToLoginPage", "Home")</a>
                 </li>
             </ul>
+            <form class="form-inline md-form mr-auto mb-4" method="get" action="Home/searchByWord">
+                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" name="text">
+                <button class="btn btn-outline-secondary btn-rounded btn-sm my-0" type="submit">Search</button>
+            </form>
         </div>
     </nav>
     <div class="container body-content">

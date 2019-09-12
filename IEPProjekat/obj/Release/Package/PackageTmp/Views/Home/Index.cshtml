@@ -1,31 +1,62 @@
-﻿@{
+﻿@model List<IEPProjekat.Models.QuestionCategoriesClass>
+@{
     ViewBag.Title = "Home Page";
 }
-
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+    <script>
+        function CallChangefunc(val) {
+            window.location.href = "/Home/filterCategory?category=" + val;
+        }
+    </script>
+<h2>Index</h2>
 
 <div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-primary" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+    <div class="col">
+        @Html.DropDownList("category", new SelectList(ViewBag.Questions.categories, ViewBag.Questions.selected),
+        new { @onchange = "CallChangefunc(this.value)" })
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+</div>
+<div class="row">
+    <div class="col">
+        @{
+            int index = 0;
+            foreach (var question in ViewBag.Questions.questions)
+            {
+                Html.RenderPartial("~/Views/Shared/OneQuestion.cshtml", new ViewDataDictionary(question));
+                index++;
+            }
+        }
+
+        @if (ViewBag.Questions.qp.Pager.EndPage > 1)
+        {
+            <ul class="pagination">
+                @if (ViewBag.Questions.qp.Pager.CurrentPage > 1)
+                {
+                    <li>
+                        <a href="~/Client/Index">First</a>
+                    </li>
+                    <li>
+                        <a href="~/Client/Index?page=@(ViewBag.Questions.qp.Pager.CurrentPage - 1)">Previous</a>
+                    </li>
+                }
+
+                @for (var page = ViewBag.Questions.qp.Pager.StartPage; page <= ViewBag.Questions.qp.Pager.EndPage; page++)
+                {
+                    <li class="@(page == ViewBag.Questions.qp.Pager.CurrentPage ? "active" : "")">
+                        <a href="~/Client/Index?page=@page">@page</a>
+                    </li>
+                }
+
+                @if (ViewBag.Questions.qp.Pager.CurrentPage < ViewBag.Questions.qp.Pager.TotalPages)
+                {
+                    <li>
+                        <a href="~/Client/Index?page=@(ViewBag.Questions.qp.Pager.CurrentPage + 1)">Next</a>
+                    </li>
+                    <li>
+                        <a href="~/Client/Index?page=@(ViewBag.Questions.qp.Pager.TotalPages)">Last</a>
+                    </li>
+                }
+            </ul>
+        }
+
     </div>
 </div>

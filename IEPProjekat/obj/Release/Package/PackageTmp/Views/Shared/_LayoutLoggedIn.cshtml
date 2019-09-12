@@ -18,9 +18,14 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="#"> @Html.ActionLink("View my profile", "goToMyProfile") <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="#"> @Html.ActionLink("Buy tokens", "openBuyTokensPage") <span class="sr-only">(current)</span></a>
                 </li>
             </ul>
         </div>
+        <form class="form-inline md-form mr-auto mb-4" method="get" action="Home/searchByWord">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" name="text">
+            <button class="btn btn-outline-secondary btn-rounded btn-sm my-0" type="submit">Search</button>
+        </form>
     </nav>
     <div class="container body-content">
         @RenderBody()

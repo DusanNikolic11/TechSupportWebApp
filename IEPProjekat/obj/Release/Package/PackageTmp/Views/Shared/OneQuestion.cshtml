@@ -4,10 +4,10 @@
     <div class="col-9">
         <div class="row">
             <div class="col-3">
-                <a href="location.href='@Url.Action("openQuestion", "Client")'"><img src="@Url.Content("~/" + Model.Picture)" alt="Failed to load image" style="height:50%;" /></a>
+                <a href="@Url.Action("openQuestion", new { index = Model.Id })"><img src="@Url.Content("~/" + Model.Picture)" alt="Failed to load image" style="height:50%;" /></a>
             </div>
             <div class="col-9">
-                <div class="row"><div class="col"><h4><a>@Html.ActionLink(@Model.Title, "openQuestion")</a></h4></div></div>
+                <div class="row"><div class="col"><h4><a>@Html.ActionLink(@Model.Title, "openQuestion", new { index = Model.Id })</a></h4></div></div>
                 <div class="row"><div class="col"><h6>By: @Model.Author.Name  @Model.Author.LastName</h6></div></div>
                 <div class="row"><div class="col"><p>@Model.Text</p></div></div>
             </div>

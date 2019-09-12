@@ -1,0 +1,18 @@
+﻿@model IEPProjekat.Models.Reply
+    <div class="row">
+        <div class="col-9">
+            <div class="row">
+                <div class="col-12">
+                    <div class="row"><div class="col"><h6>By: @Model.ReplyAuthor.Name @Model.ReplyAuthor.LastName</h6></div></div>
+                    <div class="row"><div class="col"><p>@Model.Text</p></div></div>
+                    <div class="row"><div class="col"><p>Plus: @Model.PlusGrades /// Minus :@Model.MinusGrades</p></div></div>
+                    <div class="row">
+                        <div class="col-1"><button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("rateReply", "Client", new { replyId = Model.Id, value = 1 })'">Upvote</button></div>
+                        <div class="col-1">&nbsp</div>
+                        <div><button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("rateReply", "Client", new { replyId = Model.Id, value = -1 })'">Downvote</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+

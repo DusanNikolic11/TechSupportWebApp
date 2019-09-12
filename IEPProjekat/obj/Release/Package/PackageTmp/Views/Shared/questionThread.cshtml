@@ -1,8 +1,76 @@
-﻿
+﻿@model IEPProjekat.Models.QuestionAnswersClass
 @{
     ViewBag.Title = "questionThread";
-    Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
+    if (Session["user"] != null) { Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml"; }
+    else { Layout = "~/Views/Shared/_Layout.cshtml"; }
+    var controller = ViewContext.RouteData.GetRequiredString("controller");
 }
 
-<h2>questionThread</h2>
+<script>
+        function CallChangefunc2(val, idval) {
+            window.location.href = "/@controller/filterReplies?category=" + val + "&question=" + idval;
+            document.getElementById('categories').selectedIndex = val;
+        }
+</script>
+
+<h2>Index</h2>
+
+<div class="row">
+    <div class="col-3">
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        Question thread
+        <br />
+        <div class="row">
+            <div class="col">
+                @Html.DropDownList("categories", new SelectListItem[]
+                {
+                    new SelectListItem() { Text = "Most recent", Value = "0" },
+                    new SelectListItem() { Text = "Least recent", Value = "1" },
+                    new SelectListItem() { Text = "Best rated", Value = "2" },
+                    new SelectListItem() { Text = "Worst rated", Value = "3" }
+                },
+            new { @onchange = "CallChangefunc2(this.value," + ViewBag.returnVal.question.Id + ")" })
+            </div>
+            <div class="col">
+                @{ if (ViewBag.returnVal.question.Status == 1)
+                    {
+                        <button type="button" class="bnt btn-primary" onclick="location.href='@Url.Action("lockQuestion", "Client", new { questionId = ViewBag.returnVal.question.Id })'">Archive question</button>
+                    }
+                }
+                <button type="button" class="bnt btn-primary" onclick="location.href='@Url.Action("deleteQuestion", "Client", new { questionId = ViewBag.returnVal.question.Id })'">Delete question</button>
+            </div>
+        </div>
+            <div class="row">
+                <div class="col">
+                    @{
+                        foreach (var reply in ViewBag.returnVal.allReplies)
+                        {
+                            Html.RenderPartial("~/Views/Shared/OneReply.cshtml", new ViewDataDictionary(reply));
+                        }
+                    }
+
+                </div>
+            </div>
+            @{ if (ViewBag.returnVal.question.Status == 1)
+                 {
+                    <div class="row">
+                        <div class="col">
+                            <form name="formareply" method="get" action="giveReply">
+                                <div class="form-group">
+                                    <label for="exampleFormControlTextarea1">Large textarea</label>
+                                    <textarea class="form-control rounded-0" id="exampleFormControlTextarea1" name="text" rows="10"></textarea>
+                                </div>
+                                <input type="hidden" name="questionId" value="@ViewBag.returnVal.question.Id" />
+                                <button type="submit" class="btn btn-primary">Submit answer!</button>
+                            </form>
+                        </div>
+                    </div>
+               }
+            }
+            </div>
+    </div>
+
 
