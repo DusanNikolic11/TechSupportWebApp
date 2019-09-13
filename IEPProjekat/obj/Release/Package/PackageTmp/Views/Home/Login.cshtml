@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-    <div class="row">
+    <div class="row pt-5" style="margin:auto;">
         <div class="col-md-5 mx-auto">
             <div id="first">
                 <div class="myform form ">
@@ -13,6 +13,10 @@
                             <h1>Login</h1>
                         </div>
                     </div>
+                    @{ if (ViewBag.message != null)
+                        {
+                            <h6>@ViewBag.message</h6>
+                        }}
                     <form action="Login" method="post" name="loginForm">
                         <div class="form-group">
                             <label for="exampleInputEmail1">Email address</label>
@@ -22,10 +26,7 @@
                             <label for="exampleInputEmail1">Password</label>
                             <input type="password" name="password" id="password" class="form-control" aria-describedby="emailHelp" placeholder="Enter Password">
                         </div>
-                        <div class="form-group">
-                            <p class="text-center">By signing up you accept our <a href="#">Terms Of Use</a></p>
-                        </div>
-                        <div class="col-md-12 text-center ">
+                        <div class="col-md-12 text-center pt-4">
                             <button type="submit" class=" btn btn-block mybtn btn-primary tx-tfm">Login</button>
                         </div>
                         <div class="col-md-12 ">
@@ -33,11 +34,10 @@
                                 <hr class="hr-or">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <p class="text-center">Don't have account? <a href="#" id="signup">Sign up here</a></p>
+                        <div class="form-group pt-2">
+                            <p class="text-center">Don't have account? <a href="@Url.Action("goToRegisterPage")" id="signup">Sign up here</a></p>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>

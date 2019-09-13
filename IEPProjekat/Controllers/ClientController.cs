@@ -30,6 +30,7 @@ namespace IEPProjekat.Controllers
             }
             if (questions==null)
                 questions = db.questions.ToList();
+            questions = questions.ToList().FindAll(x => x.MyChannel == null);
             QuestionCategoriesClass qc = new QuestionCategoriesClass();
             qc.questions = questions;
             List<String> categories = new List<String>();
@@ -64,6 +65,12 @@ namespace IEPProjekat.Controllers
             User u = (User)Session["user"];
             ViewBag.User = u;
             return View("../Shared/profilePage");
+        }
+
+        public ActionResult logout()
+        {
+            Session.Remove("user");
+            return RedirectToAction("Index", "Home");
         }
 
         public ActionResult goToAskQuestion()
@@ -102,7 +109,10 @@ namespace IEPProjekat.Controllers
         public ActionResult openQuestion(int index)
         {
             Question question = db.questions.ToList().Find(x => x.Id == index);
-            List<Reply> replies = question.Replies.ToList();
+            List<Reply> replies = null;
+            if (question.Replies !=null) { 
+                 replies = question.Replies.ToList();
+            }
             QuestionAnswersClass q = new QuestionAnswersClass();
             q.question = question;
             q.allReplies = replies;
@@ -154,6 +164,22 @@ namespace IEPProjekat.Controllers
             ((User)Session["user"]).Grades.Add(g);
             db.grades.Add(g);
             db.SaveChanges();
+        }
+
+        [HttpGet]
+        public ActionResult searchByWord(String text)
+        {
+            List<Question> questionss;
+            if (TempData["list"] == null || (TempData["category"] == null))
+            {
+                questionss = db.questions.ToList().FindAll(x => x.Title.Contains(text) == true);
+            }
+            else
+            {
+                questionss = ((List<Question>)TempData.Peek("list")).FindAll(x => x.Title.Contains(text) == true);
+            }
+            TempData["list"] = questionss;
+            return RedirectToAction("Index");
         }
 
         public ActionResult lockQuestion(int questionId)

@@ -142,3 +142,14 @@ C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\System.Web.Http.WebHost.
 C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\obj\Release\IEPProjekat.Migrations.AddedTextFieldToReplyTable.resources
 C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\obj\Release\IEPProjekat.Migrations.changedgradestoaddids.resources
 C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\obj\Release\IEPProjekat.Migrations.addedcategoriestableAndChangedQuestionsToHaveCategoriesAsFieldInsteadOfStringForCategories.resources
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.AspNet.SignalR.Core.dll
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.AspNet.SignalR.SystemWeb.dll
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.Owin.dll
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.Owin.Host.SystemWeb.dll
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.Owin.Security.dll
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Owin.dll
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.AspNet.SignalR.Core.xml
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.AspNet.SignalR.SystemWeb.xml
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.Owin.xml
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.Owin.Host.SystemWeb.xml
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.Owin.Security.xml

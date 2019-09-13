@@ -2,61 +2,67 @@
 @{
     ViewBag.Title = "Home Page";
 }
-    <script>
-        function CallChangefunc(val) {
-            window.location.href = "/Home/filterCategory?category=" + val;
-        }
-    </script>
-<h2>Index</h2>
+<script>
+    function CallChangefunc(val) {
+        window.location.href = "/Home/filterCategory?category=" + val;
+    }
+</script>
 
-<div class="row">
-    <div class="col">
-        @Html.DropDownList("category", new SelectList(ViewBag.Questions.categories, ViewBag.Questions.selected),
-        new { @onchange = "CallChangefunc(this.value)" })
+    <h2 class="mx-auto text-center py-5">Welcome to our tech support! We are here for all inconveniences you could've experienced and feel free to ask us anything!</h2>
+
+    <div class="mt-3">
+        <div class="row pt-3">
+            <div class="col  offset-10">
+                @Html.DropDownList("category", new SelectList(ViewBag.Questions.categories, ViewBag.Questions.selected),
+                new { @onchange = "CallChangefunc(this.value)" })
+            </div>
+        </div>
+        <div class="row pt-3">
+            <div class="col">
+                @{
+                    int index = 0;
+                    foreach (var question in ViewBag.Questions.qp.Items)
+                    {
+                        Html.RenderPartial("~/Views/Shared/OneQuestion.cshtml", new ViewDataDictionary(question));
+                        index++;
+                    }
+                }
+                <div class="row my-5">
+                    <div class="col-2 mx-auto text-center">
+                        @if (ViewBag.Questions.qp.Pager.EndPage > 1)
+                        {
+                            <ul class="pagination">
+                                @if (ViewBag.Questions.qp.Pager.CurrentPage > 1)
+                                {
+                                    <li>
+                                        <a class="border border-primary py-1 px-2 m-0 text-white" href="~/Home/Index">First</a>
+                                    </li>
+                                    <li>
+                                        <a class="border border-primary py-1 px-2 m-0 text-white" href="~/Home/Index?page=@(ViewBag.Questions.qp.Pager.CurrentPage - 1)">Previous</a>
+                                    </li>
+                                }
+
+                                @for (var page = ViewBag.Questions.qp.Pager.StartPage; page <= ViewBag.Questions.qp.Pager.EndPage; page++)
+                                {
+                                    <li class="">
+                                        <a class="@(page == ViewBag.Questions.qp.Pager.CurrentPage ? "bg-primary" : "") border border-primary py-1 px-2 m-0 text-white" href="~/Home/Index?page=@page">@page</a>
+                                    </li>
+                                }
+
+                                @if (ViewBag.Questions.qp.Pager.CurrentPage < ViewBag.Questions.qp.Pager.TotalPages)
+                                {
+                                    <li>
+                                        <a class="border border-primary py-1 px-2 m-0 text-white" href="~/Home/Index?page=@(ViewBag.Questions.qp.Pager.CurrentPage + 1)">Next</a>
+                                    </li>
+                                    <li>
+                                        <a class="border border-primary py-1 px-2 m-0 text-white" href="~/Home/Index?page=@(ViewBag.Questions.qp.Pager.TotalPages)">Last</a>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
-</div>
-<div class="row">
-    <div class="col">
-        @{
-            int index = 0;
-            foreach (var question in ViewBag.Questions.questions)
-            {
-                Html.RenderPartial("~/Views/Shared/OneQuestion.cshtml", new ViewDataDictionary(question));
-                index++;
-            }
-        }
-
-        @if (ViewBag.Questions.qp.Pager.EndPage > 1)
-        {
-            <ul class="pagination">
-                @if (ViewBag.Questions.qp.Pager.CurrentPage > 1)
-                {
-                    <li>
-                        <a href="~/Client/Index">First</a>
-                    </li>
-                    <li>
-                        <a href="~/Client/Index?page=@(ViewBag.Questions.qp.Pager.CurrentPage - 1)">Previous</a>
-                    </li>
-                }
-
-                @for (var page = ViewBag.Questions.qp.Pager.StartPage; page <= ViewBag.Questions.qp.Pager.EndPage; page++)
-                {
-                    <li class="@(page == ViewBag.Questions.qp.Pager.CurrentPage ? "active" : "")">
-                        <a href="~/Client/Index?page=@page">@page</a>
-                    </li>
-                }
-
-                @if (ViewBag.Questions.qp.Pager.CurrentPage < ViewBag.Questions.qp.Pager.TotalPages)
-                {
-                    <li>
-                        <a href="~/Client/Index?page=@(ViewBag.Questions.qp.Pager.CurrentPage + 1)">Next</a>
-                    </li>
-                    <li>
-                        <a href="~/Client/Index?page=@(ViewBag.Questions.qp.Pager.TotalPages)">Last</a>
-                    </li>
-                }
-            </ul>
-        }
-
-    </div>
-</div>

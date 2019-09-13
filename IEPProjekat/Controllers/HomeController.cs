@@ -27,6 +27,7 @@ namespace IEPProjekat.Controllers
             }
             if (questions == null)
                 questions = db.questions.ToList();
+            questions = questions.ToList().FindAll(x => x.MyChannel == null);
             QuestionCategoriesClass qc = new QuestionCategoriesClass();
             qc.questions = questions;
             List<String> categories = new List<String>();
@@ -55,24 +56,12 @@ namespace IEPProjekat.Controllers
             return View();
         }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
 
         public ActionResult goToRegisterPage()
         {
             return View("RegisterPage");
         }
+
         [HttpPost]
         public ActionResult registerMe(String first_name, String last_name, String email, String password, String password_confirmation)
         {
@@ -87,8 +76,17 @@ namespace IEPProjekat.Controllers
                     db.SaveChanges();
                     return View("Login");
                 }
+                else
+                {
+                    ViewBag.message = "Password wasn't confirmed correctly";
+                    return View("RegisterPage");
+                }
             }
-            return View("Home", "Index");
+            else
+            {
+                ViewBag.message = "User with this e-mail already exists, go on and log in!";
+                return View("Login");
+            }
         }
 
         private String hashPassword(String password)
@@ -113,13 +111,24 @@ namespace IEPProjekat.Controllers
                 Session["user"] = user;
                 return RedirectToAction("Index", "Client");
             }
+            user = db.users.SingleOrDefault(s => s.Mail == email);
+            if (user!=null)
+            {
+                ViewBag.message = "Wrong password!";
+                return View("Login");
+            }
+            ViewBag.message = "Wrong email!";
             return View("Login");
         }
 
         public ActionResult openQuestion(int index)
         {
             Question question = db.questions.ToList().Find(x => x.Id == index);
-            List<Reply> replies = question.Replies.ToList();
+            List<Reply> replies = null;
+            if (question.Replies != null)
+            {
+                replies = question.Replies.ToList();
+            }
             QuestionAnswersClass q = new QuestionAnswersClass();
             q.question = question;
             q.allReplies = replies;
@@ -131,13 +140,13 @@ namespace IEPProjekat.Controllers
         public ActionResult searchByWord(String text)
         {
             List<Question> questionss;
-            if (TempData["list"]==null)
+            if (TempData["list"]==null || (TempData["category"]==null))
             {
-                questionss = db.questions.ToList().FindAll(x => x.Text.Contains(text)==true);
+                questionss = db.questions.ToList().FindAll(x => x.Title.Contains(text)==true);
             }
             else
             {
-                questionss = ((List<Question>)TempData.Peek("list")).FindAll(x => x.Text.Contains(text)==true);
+                questionss = ((List<Question>)TempData.Peek("list")).FindAll(x => x.Title.Contains(text)==true);
             }
             TempData["list"] = questionss;
             return RedirectToAction("Index");
