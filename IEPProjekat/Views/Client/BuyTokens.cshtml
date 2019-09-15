@@ -4,64 +4,98 @@
     Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
 }
 
+@{ 
+    var silverTotal = ViewBag.setup.PriceSilver * ViewBag.setup.AmountSilver;
+    var goldTotal = ViewBag.setup.PriceGold * ViewBag.setup.AmountGold;
+    var platTotal = ViewBag.setup.PricePlat * ViewBag.setup.AmountPlat;
+    var balance = ((IEPProjekat.Models.User)Session["user"]).Tokens;
+}
+
 <style>
     .card-img-top {
         height: 150px;
         width: 100%;
     }
 </style>
-<div class="card-deck row" style="margin-top:10%;">
-    <div class="card col-sm-2">
-        <img src="~/Images/silver.png" class="card-img-top" alt="...">
+<div class="row pt-5">
+    <div class="col-12 text-center">
+        @{ if (ViewBag.message != null)
+            {
+                <h3>Your purchase has been @ViewBag.message! Current balance is: @balance</h3>
+            }
+        }
+    </div>
+</div>
+<div class="card-deck row text-center" style="margin-top:10%;">
+    <div class="card col-sm-2 mx-auto">
+        <img src="~/silver.png" class="card-img-top" alt="...">
         <div class="card-body">
             <h3 class="card-title">Silver</h3>
             <br />
-            <p style="font-size:22px;" class="glyphicon glyphicon-btc"></p>
             <br />
-            <br />
-            <p style="font-size:22px;" class="glyphicon glyphicon-euro"></p>
-            <br />
-            <br />
-            <button type="submit" value="silver" class="btn btn-success"
-                    onclick="location.href='@Url.Action("buyTokens", "Client" , new { id=1 })'">
-                Buy
-            </button>
-
+            <form action="~/Client/buyTokens?id=1" method="post" name="silverPurchase">
+                <label>@ViewBag.setup.PriceSilver$ x @ViewBag.setup.AmountSilver = @silverTotal$</label><br /><br /><br />
+                <button type="submit" value="silver" class="btn btn-success">
+                    Buy
+                </button>
+            </form>
         </div>
     </div>
-    <div class="card col-sm-2 col-md-offset-1">
-        <img src="~/Images/gold.png" class="card-img-top" alt="...">
+    <div class="card col-sm-2 col-md-offset-1 mx-auto">
+        <img src="~/gold.png" class="card-img-top" alt="...">
         <div class="card-body">
             <h3 class="card-title">Gold</h3>
             <br />
-            <p style="font-size:22px;" class="glyphicon glyphicon-btc"></p>
             <br />
-            <br />
-            <p style="font-size:22px;" class="glyphicon glyphicon-euro"></p>
-            <br />
-            <br />
-            <button type="submit" value="silver" class="btn btn-success"
-                    onclick="location.href='@Url.Action("Purchase", "SysDefs" , new { id=2 })'">
-                Buy
-            </button>
+            <form action="~/Client/buyTokens/2" method="post" name="goldPurchase">
+                <label>@ViewBag.setup.PriceGold$ x @ViewBag.setup.AmountGold = @goldTotal$</label><br /><br /><br />
+                <button type="submit" value="gold" class="btn btn-success">
+                    Buy
+                </button>
+            </form>
         </div>
     </div>
-    <div class="card col-sm-2 col-md-offset-1">
-        <img src="~/Images/platinum.jpg" class="card-img-top" alt="...">
+    <div class="card col-sm-2 col-md-offset-1 mx-auto">
+        <img src="~/platinum.png" class="card-img-top" alt="...">
         <div class="card-body">
             <h3 class="card-title">Platinum</h3>
             <br />
-            <p style="font-size:22px;" class="glyphicon glyphicon-btc"></p>
             <br />
-            <br />
-            <p style="font-size:22px;" class="glyphicon glyphicon-euro"></p>
-            <br />
-            <br />
-            <button type="submit" value="silver" class="btn btn-success"
-                    onclick="location.href='@Url.Action("Purchase", "SysDefs" , new { id=3 })'">
-                Buy
-            </button>
+            <form action="~/Client/buyTokens/3" method="post" name="platinumPurchase">
+                <label>@ViewBag.setup.PricePlat$ x @ViewBag.setup.AmountPlat = @platTotal$</label><br /><br /><br />
+                <button type="submit" value="plat" class="btn btn-success">
+                    Buy
+                </button>
+            </form>
         </div>
+    </div>
+</div>
+<div class="row pt-5">
+    <div class="col-12">
+        <table class="table table-striped">
+            <tbody>
+                @{ var index = 1;
+                    <tr>
+                        <th scope="row">#</th>
+                        <td>Amount</td>
+                        <td>Price: $</td>
+                        <td>Token type</td>
+                        <td>Time</td>
+                    </tr>
+                    foreach (var purchase in ViewBag.purchases)
+                    {
+                        <tr>
+                            <th scope="row">@index</th>
+                            <td>@purchase.Amount</td>
+                            <td>@purchase.TotalPrice $</td>
+                            <td>@purchase.Type</td>
+                            <td>@purchase.Moment</td>
+                        </tr>
+                        index++;
+                    }
+                }
+            </tbody>
+        </table>
     </div>
 </div>
 

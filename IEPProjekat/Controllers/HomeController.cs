@@ -130,6 +130,9 @@ namespace IEPProjekat.Controllers
                 replies = question.Replies.ToList();
             }
             QuestionAnswersClass q = new QuestionAnswersClass();
+            q.filters = new List<String>();
+            q.filters.Add("Least recent"); q.filters.Add("Most recent"); q.filters.Add("Best rated"); q.filters.Add("Worst rated");
+            q.selectedFilter = "Least recent";
             q.question = question;
             q.allReplies = replies;
             ViewBag.returnVal = q;
@@ -173,32 +176,37 @@ namespace IEPProjekat.Controllers
         {
             Question questionn = db.questions.ToList().Find(x => x.Id == question);
             List<Reply> replies = db.replies.ToList().FindAll(x => x.ReplyToWhichQuestion.Id == questionn.Id);
+            QuestionAnswersClass q = new QuestionAnswersClass();
+            q.filters = new List<String>();
+            q.filters.Add("Least recent"); q.filters.Add("Most recent"); q.filters.Add("Best rated"); q.filters.Add("Worst rated");
             switch (category)
             {
-                case "0": replies.Sort(new DateComparer()); break;
-                case "1": { replies.Sort(new DateComparer()); replies.Reverse(); } break;
-                case "2":
+                case "Least recent": { replies.Sort(new DateComparer()); q.selectedFilter = "Least recent"; } break;
+                case "Most recent":  { replies.Sort(new DateComparer()); replies.Reverse(); q.selectedFilter = "Most recent"; } break;
+                case "Best rated":
                     replies.Sort(delegate (Reply x, Reply y)
-          {
-              if (x.PlusGrades > y.PlusGrades)
-                  return 1;
-              else if (y.PlusGrades > x.PlusGrades)
-                  return -1;
-              else
-                  return 0;
-          }); break;
-                case "3":
+                    {
+                        q.selectedFilter = "Best rated";
+                        if (x.MinusGrades > y.MinusGrades)
+                            return 1;
+                        else if (y.MinusGrades > x.MinusGrades)
+                            return -1;
+                        else
+                            return 0;
+                    }); break;
+                    
+                case "Worst rated":
                     replies.Sort(delegate (Reply x, Reply y)
-              {
-                  if (x.MinusGrades > y.MinusGrades)
-                      return 1;
-                  else if (y.MinusGrades > x.MinusGrades)
-                      return -1;
-                  else
-                      return 0;
-              }); break;
+                    {
+                        q.selectedFilter = "Worst rated";
+                        if (x.PlusGrades > y.PlusGrades)
+                            return 1;
+                        else if (y.PlusGrades > x.PlusGrades)
+                            return -1;
+                        else
+                            return 0;
+                    }); break;
             }
-            QuestionAnswersClass q = new QuestionAnswersClass();
             q.question = questionn;
             q.allReplies = replies;
             ViewBag.returnVal = q;

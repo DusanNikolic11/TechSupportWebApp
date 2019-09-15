@@ -10,57 +10,47 @@
         width: 100%;
     }
 </style>
-<div class="card-deck row" style="margin-top:10%;">
-    <div class="card col-sm-2">
+<div class="card-deck row text-center" style="margin-top:10%;">
+    <div class="card col-sm-2 mx-auto">
         <img src="~/Images/silver.png" class="card-img-top" alt="...">
         <div class="card-body">
             <h3 class="card-title">Silver</h3>
             <br />
-            <p style="font-size:22px;" class="glyphicon glyphicon-btc"></p>
             <br />
-            <br />
-            <p style="font-size:22px;" class="glyphicon glyphicon-euro"></p>
-            <br />
-            <br />
-            <button type="submit" value="silver" class="btn btn-success"
-                    onclick="location.href='@Url.Action("buyTokens", "Client" , new { id=1 })'">
-                Buy
-            </button>
-
+            <form action="~/Client/buyTokens/1" method="post" name="silverPurchase">
+                <input type="text" placeholder="Amount" id="amountSilver" style="width:100%;" /><br /><br /><br />
+                <button type="submit" value="silver" class="btn btn-success">
+                    Buy
+                </button>
+            </form>
         </div>
     </div>
-    <div class="card col-sm-2 col-md-offset-1">
+    <div class="card col-sm-2 col-md-offset-1 mx-auto">
         <img src="~/Images/gold.png" class="card-img-top" alt="...">
         <div class="card-body">
             <h3 class="card-title">Gold</h3>
             <br />
-            <p style="font-size:22px;" class="glyphicon glyphicon-btc"></p>
             <br />
-            <br />
-            <p style="font-size:22px;" class="glyphicon glyphicon-euro"></p>
-            <br />
-            <br />
-            <button type="submit" value="silver" class="btn btn-success"
-                    onclick="location.href='@Url.Action("Purchase", "SysDefs" , new { id=2 })'">
-                Buy
-            </button>
+            <form action="~/Client/buyTokens/2" method="post" name="goldPurchase">
+                <input type="text" placeholder="Amount" id="amountGold" style="width:100%;" /><br /><br /><br />
+                <button type="submit" value="gold" class="btn btn-success">
+                    Buy
+                </button>
+            </form>
         </div>
     </div>
-    <div class="card col-sm-2 col-md-offset-1">
+    <div class="card col-sm-2 col-md-offset-1 mx-auto">
         <img src="~/Images/platinum.jpg" class="card-img-top" alt="...">
         <div class="card-body">
             <h3 class="card-title">Platinum</h3>
             <br />
-            <p style="font-size:22px;" class="glyphicon glyphicon-btc"></p>
             <br />
-            <br />
-            <p style="font-size:22px;" class="glyphicon glyphicon-euro"></p>
-            <br />
-            <br />
-            <button type="submit" value="silver" class="btn btn-success"
-                    onclick="location.href='@Url.Action("Purchase", "SysDefs" , new { id=3 })'">
-                Buy
-            </button>
+            <form action="~/Client/buyTokens/3" method="post" name="platinumPurchase">
+                <input type="text" placeholder="Amount" id="amountPlat" style="width:100%;" /><br /><br /><br />
+                <button type="submit" value="plat" class="btn btn-success">
+                    Buy
+                </button>
+            </form>
         </div>
     </div>
 </div>

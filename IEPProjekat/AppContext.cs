@@ -14,6 +14,9 @@ namespace IEPProjekat
         public DbSet<Models.Grade> grades { get; set; }
         public DbSet<Models.Channel> channels { get; set; }
         public DbSet<Models.QuestionCategories> categories { get; set; }
+        public DbSet<Models.Purchase> purchases { get; set; }
+
+        public DbSet<Models.Setup> setup { get; set; }
 
         public AppContext() : base("IEP2019")
         {

@@ -1,0 +1,113 @@
+﻿
+@{
+    ViewBag.Title = "SetupPage";
+    Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
+}
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#removeCategory").click(function () {
+            $("#list-tab").children().each(function () {
+                if ($(this).hasClass("active")) {
+                    var dataValue = $(this).text();
+                    $.ajax({
+                        type: "POST",
+                        url: "removeCategory",
+                        data: { dataValue: dataValue },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            alert("Your request couldn't be completed right now, please try again later!");
+                        },
+                        complete: function (jqXHR, status) {
+                            $("#list-tab").children().remove(".active");
+                        }
+                    })
+                }
+            })
+        })
+    })
+
+    $(document).ready(function () {
+        $("#addCategory").click(function () {
+            var categoryName = $("#categoryName").val();
+            $.ajax({
+                type: "POST",
+                url: "addCategory",
+                data: { dataValue: categoryName },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("Your request couldn't be completed right now, please try again later!");
+                },
+                complete: function (jqXHR, status) {
+                    $("#list-tab").append("<a class=\"list-group-item list-group-item-action\" id=\"list-profile-list\" data-toggle=\"list\" href=\"#list-profile\" role=\"tab\" aria-controls=\"profile\">"+categoryName+"</a>");
+                }
+            })
+        })
+    })
+</script>
+
+
+<div class="row pt-5 mx-auto">
+    <div class="col-12">
+        <form name="changeSetup" method="post" action="changeSetup">
+            <div class="row pt-4">
+                <div class="col-5 text-right"><h5><label>Price for silver tokens:</label></h5></div>
+                <div class="col-7"><input class="text-center" style="width:50%;" name="ps" type="text" value="@ViewBag.stats.PriceSilver"></div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-5 text-right"><h5><label>Price for gold tokens:</label></h5></div>
+                <div class="col-7"><input class="text-center" style="width:50%;" name="pg" type="text" value="@ViewBag.stats.PriceGold"></div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-5 text-right"><h5><label>Price for platinum tokens:</label></h5></div>
+                <div class="col-7"><input class="text-center" style="width:50%;" name="pp" type="text" value="@ViewBag.stats.PricePlat"></div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-5 text-right"><h5><label>Amount of silver tokens when buying:</label></h5></div>
+                <div class="col-7"><input class="text-center" style="width:50%;" name="asi" type="text" value="@ViewBag.stats.AmountSilver"></div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-5 text-right"><h5><label>Amount of gold tokens when buying:</label></h5></div>
+                <div class="col-7"><input class="text-center" style="width:50%;" name="ag" type="text" value="@ViewBag.stats.AmountGold"></div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-5 text-right"><h5><label>Amount of platinum tokens when buying:</label></h5></div>
+                <div class="col-7"><input class="text-center" style="width:50%;" name="ap" type="text" value="@ViewBag.stats.AmountPlat"></div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-5 text-right"><h5><label>Price of opening channel with silver:</label></h5></div>
+                <div class="col-7"><input class="text-center" style="width:50%;" name="cas" type="text" value="@ViewBag.stats.ChannelAmountSilver"></div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-5 text-right"><h5><label>Price of opening channel with gold:</label></h5></div>
+                <div class="col-7"><input class="text-center" style="width:50%;" name="cag" type="text" value="@ViewBag.stats.ChannelAmountGold"></div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-5 text-right"><h5><label>Price of opening channel with platinum:</label></h5></div>
+                <div class="col-7"><input class="text-center" style="width:50%;" name="cap" type="text" value="@ViewBag.stats.ChannelAmountPlat"></div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-12 text-center"><button type="submit" class="btn btn-primary">Submit changes</button></div>
+            </div>
+        </form>
+            <div class="row pt-4">
+                <div class="col-4">
+                    <h5>Categories</h5>
+                    <div class="list-group text-center" id="list-tab" role="tablist">
+                        @{ foreach (var category in ViewBag.categories)
+                            {
+                                <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">@category.Category</a>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="col-4 offset-4 pt-4 text-center">
+                    Category: <input class="ml-3" id="categoryName" type="text" placeholder="Category name" />
+                    <div class="row py-3"><div class="col text-center"><button type="button" class="btn btn-primary" id="addCategory">Add category</button></div></div>
+                </div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-4 text-center"><button type="button" class="btn btn-primary" id="removeCategory">Remove this category</button></div>
+            </div>
+    </div>
+</div>
+
+

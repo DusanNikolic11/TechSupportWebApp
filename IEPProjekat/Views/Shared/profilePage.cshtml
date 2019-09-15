@@ -4,26 +4,28 @@
     Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
 }
 
-    <form>
-        <div>
-            <label>First Name</label>
-            <input type="text" readonly value="@ViewBag.User.Name">
+    <div class="row pt-5 mx-auto">
+        <div class="col-12">
+            <div class="row pt-4">
+                <div class="col-5 text-right"><h5><label>First Name</label></h5></div>
+                <div class="col-7"><input style="width:50%;" type="text" readonly value="@ViewBag.User.Name"></div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-5 text-right"><h5><label>Last name</label></h5></div>
+                <div class="col-7"><input style="width:50%;" type="text" readonly value="@ViewBag.User.LastName"></div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-5 text-right"><h5><label>Email</label></h5></div>
+                <div class="col-7"><input style="width:50%;" type="text" readonly value="@ViewBag.User.Mail"></div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-5 text-right"><h5><label>Tokens</label></h5></div>
+                <div class="col-7"><input style="width:50%;" type="text" readonly value="@ViewBag.User.Tokens"></div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-5 text-right"><h5><label>Role</label></h5></div>
+                <div class="col-7"><input style="width:50%;" type="text" readonly value="@ViewBag.User.Role"></div>
+            </div>
         </div>
-        <div>
-            <label>Last name</label>
-            <input type="text" readonly value="@ViewBag.User.LastName">
-        </div>
-        <div>
-            <label>Email</label>
-            <input type="text" readonly value="@ViewBag.User.Mail">
-        </div>
-        <div>
-            <label>Tokens</label>
-            <input type="text" readonly value="@ViewBag.User.Tokens">
-        </div>
-        <div>
-            <label>Role</label>
-            <input type="text" readonly value="@ViewBag.User.Role">
-        </div>
-    </form>
+    </div>
 

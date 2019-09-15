@@ -9,68 +9,126 @@
 <script>
         function CallChangefunc2(val, idval) {
             window.location.href = "/@controller/filterReplies?category=" + val + "&question=" + idval;
-            document.getElementById('categories').selectedIndex = val;
         }
 </script>
-
-<h2>Index</h2>
 
 <div class="row">
     <div class="col-3">
     </div>
 </div>
-<div class="row">
+<div class="row pt-5 pb-2 font-weight-bolder text-success">
     <div class="col">
-        Question thread
+        <h1>@ViewBag.returnVal.question.Title</h1><h5>@ViewBag.returnVal.question.Author.Name @ViewBag.returnVal.question.Author.LastName</h5> 
         <br />
-        <div class="row">
-            <div class="col">
-                @Html.DropDownList("categories", new SelectListItem[]
+    </div>
+    <div class="col text-right">
+        @{
+            if (Session["user"] != null)
+            {
+                if (controller == "Client")
                 {
-                    new SelectListItem() { Text = "Most recent", Value = "0" },
-                    new SelectListItem() { Text = "Least recent", Value = "1" },
-                    new SelectListItem() { Text = "Best rated", Value = "2" },
-                    new SelectListItem() { Text = "Worst rated", Value = "3" }
-                },
-            new { @onchange = "CallChangefunc2(this.value," + ViewBag.returnVal.question.Id + ")" })
-            </div>
-            <div class="col">
-                @{ if (ViewBag.returnVal.question.Status == 1)
+                    if (ViewBag.returnVal.question.Author.Id == ((IEPProjekat.Models.User)Session["user"]).Id)
                     {
-                        <button type="button" class="bnt btn-primary" onclick="location.href='@Url.Action("lockQuestion", "Client", new { questionId = ViewBag.returnVal.question.Id })'">Archive question</button>
+                        <button type="button" class="bnt btn-primary" onclick="location.href='@Url.Action("deleteQuestion", controller, new { questionId = ViewBag.returnVal.question.Id })'">Delete question</button>
+                        if (ViewBag.returnVal.question.Status == 1)
+                        {
+                            <button type="button" class="bnt btn-primary" onclick="location.href='@Url.Action("lockQuestion", controller, new { questionId = ViewBag.returnVal.question.Id })'">Archive question</button>
+                        }
                     }
                 }
-                <button type="button" class="bnt btn-primary" onclick="location.href='@Url.Action("deleteQuestion", "Client", new { questionId = ViewBag.returnVal.question.Id })'">Delete question</button>
-            </div>
-        </div>
-            <div class="row">
-                <div class="col">
-                    @{
-                        foreach (var reply in ViewBag.returnVal.allReplies)
+                if (controller == "Agent")
+                {
+                    if (ViewBag.returnVal.question.Status == 0)
+                    {
+                        <button type="button" class="bnt btn-primary" onclick="location.href='@Url.Action("unlockQuestion", controller, new { questionId = ViewBag.returnVal.question.Id })'">Unarchive question</button>
+                    }
+                }
+                if (controller == "Admin")
+                {
+                    <button type="button" class="bnt btn-primary" onclick="location.href='@Url.Action("deleteQuestion", controller, new { questionId = ViewBag.returnVal.question.Id })'">Delete question</button>
+                    if (ViewBag.returnVal.question.Status == 0)
+                    {
+                        <button type="button" class="bnt btn-primary" onclick="location.href='@Url.Action("unlockQuestion", controller, new { questionId = ViewBag.returnVal.question.Id })'">Unarchive question</button>
+                    }
+                }
+            }
+        }
+    </div>
+</div>
+<div class="row">
+    <div class="col-9">
+        <p class="h5" style="word-break:break-all; text-align:justify;">@ViewBag.returnVal.question.Text</p>
+    </div>
+</div>
+<div class="row pt-5 pb-4">
+    <div class="col">
+        @Html.DropDownList("category", new SelectList(ViewBag.returnVal.filters, ViewBag.returnVal.selectedFilter),
+            new { @onchange = "CallChangefunc2(this.value," + ViewBag.returnVal.question.Id + ")" })
+    </div>
+</div>
+<div class="row border-top border-primary border-right">
+    <div class="col">
+        @{
+            foreach (var reply in ViewBag.returnVal.allReplies)
+            {
+                if (reply.ReplyToWhichReply!=null)
+                {
+                    continue;
+                }
+                IEPProjekat.Models.Reply r = reply;
+                List<IEPProjekat.Models.Reply> replies2reply = new List<IEPProjekat.Models.Reply>();
+                replies2reply.Add(r);
+                foreach (var reply2reply in ViewBag.returnVal.allReplies)
+                {
+                    if (reply2reply == r || reply2reply.ReplyToWhichReply==null)
+                    {
+                        continue;
+                    }
+                    if (reply2reply.ReplyToWhichReply.Id == r.Id)
+                    {
+                        replies2reply.Add(reply2reply);
+                    }
+                    else {
+                        foreach (var replyFromList in replies2reply)
                         {
-                            Html.RenderPartial("~/Views/Shared/OneReply.cshtml", new ViewDataDictionary(reply));
+                            if (replyFromList.Id==reply2reply.ReplyToWhichReply.Id)
+                            {
+                                replies2reply.Add(reply2reply);
+                                break;
+                            }
                         }
                     }
 
-                </div>
-            </div>
-            @{ if (ViewBag.returnVal.question.Status == 1)
-                 {
-                    <div class="row">
-                        <div class="col">
-                            <form name="formareply" method="get" action="giveReply">
-                                <div class="form-group">
-                                    <label for="exampleFormControlTextarea1">Large textarea</label>
-                                    <textarea class="form-control rounded-0" id="exampleFormControlTextarea1" name="text" rows="10"></textarea>
-                                </div>
-                                <input type="hidden" name="questionId" value="@ViewBag.returnVal.question.Id" />
-                                <button type="submit" class="btn btn-primary">Submit answer!</button>
-                            </form>
-                        </div>
-                    </div>
-               }
+                }
+                IEPProjekat.Models.AnswerAnswerClass aac = new IEPProjekat.Models.AnswerAnswerClass();
+                aac.reply = reply;
+                aac.allReplies = replies2reply;
+                aac.offset = 0;
+                Html.RenderPartial("~/Views/Shared/OneReply.cshtml", new ViewDataDictionary(aac));
             }
-            </div>
+        }
     </div>
+</div>
+<div class="row pt-5">
+    <div class="col">
+        @{ if (ViewBag.returnVal.question.Status == 1 && controller!="Home")
+            {
+                <div class="row">
+                    <div class="col">
+                        <form name="formareply" method="get" action="giveReply">
+                            <div class="form-group">
+                                <label for="exampleFormControlTextarea1">Write response here:</label>
+                                <textarea class="form-control rounded-0" id="exampleFormControlTextarea1" name="text" rows="10"></textarea>
+                            </div>
+                            <input type="hidden" name="questionId" value="@ViewBag.returnVal.question.Id" />
+                            <button type="submit" class="btn btn-primary">Submit answer!</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+            
 
 

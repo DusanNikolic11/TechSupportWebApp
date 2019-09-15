@@ -1,0 +1,80 @@
+﻿@model List<IEPProjekat.Models.QuestionCategoriesClass>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
+    var controller = ((IEPProjekat.Models.User)Session["user"]).Role;
+}
+<script>
+    function CallChangefunc(val) {
+        window.location.href = "/@controller/filterCategory?category=" + val;
+    }
+</script>
+
+@{ IEPProjekat.Models.User loggedUser = (IEPProjekat.Models.User)Session["user"];}
+
+<h2 class="mx-auto text-center py-5">Welcome to our tech support! We are here for all inconveniences you could've experienced and feel free to ask us anything!</h2>
+@{ if (controller == "Client")
+    {
+        <div class="row">
+            <div class="col-3 mx-auto text-center">
+                <button onclick="location.href='@Url.Action("goToAskQuestion", "Client")'" type="button" class="btn btn-primary btn-lg">Ask a question!</button>
+            </div>
+        </div>
+    }
+}
+<div class="mt-5">
+    <div class="row pt-3">
+        <div class="col  offset-10">
+            @Html.DropDownList("category", new SelectList(ViewBag.Questions.categories, ViewBag.Questions.selected),
+            new { @onchange = "CallChangefunc(this.value)" })
+        </div>
+    </div>
+    <div class="row pt-3">
+        <div class="col">
+            @{
+                int index = 0;
+                foreach (var question in ViewBag.Questions.qp.Items)
+                {
+                    Html.RenderPartial("~/Views/Shared/OneQuestion.cshtml", new ViewDataDictionary(question));
+                    index++;
+                }
+            }
+            <div class="row my-5">
+                <div class="col-2 mx-auto text-center">
+                    @if (ViewBag.Questions.qp.Pager.EndPage > 1)
+                    {
+                        <ul class="pagination">
+                            @if (ViewBag.Questions.qp.Pager.CurrentPage > 1)
+                            {
+                                <li>
+                                    <a class="border border-primary py-1 px-2 m-0 text-white" href="~/@controller/Index">First</a>
+                                </li>
+                                <li>
+                                    <a class="border border-primary py-1 px-2 m-0 text-white" href="~/@controller/Index?page=@(ViewBag.Questions.qp.Pager.CurrentPage - 1)">Previous</a>
+                                </li>
+                            }
+
+                            @for (var page = ViewBag.Questions.qp.Pager.StartPage; page <= ViewBag.Questions.qp.Pager.EndPage; page++)
+                            {
+                                <li class="">
+                                    <a class="@(page == ViewBag.Questions.qp.Pager.CurrentPage ? "bg-primary" : "") border border-primary py-1 px-2 m-0 text-white" href="~/@controller/Index?page=@page">@page</a>
+                                </li>
+                            }
+
+                            @if (ViewBag.Questions.qp.Pager.CurrentPage < ViewBag.Questions.qp.Pager.TotalPages)
+                            {
+                                <li>
+                                    <a class="border border-primary py-1 px-2 m-0 text-white" href="~/@controller/Index?page=@(ViewBag.Questions.qp.Pager.CurrentPage + 1)">Next</a>
+                                </li>
+                                <li>
+                                    <a class="border border-primary py-1 px-2 m-0 text-white" href="~/@controller/Index?page=@(ViewBag.Questions.qp.Pager.TotalPages)">Last</a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

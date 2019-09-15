@@ -16,113 +16,232 @@ namespace IEPProjekat.Controllers
         private AppContext db = new AppContext();
 
         // GET: Admin
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
-            return View(db.users.ToList());
-        }
-
-        // GET: Admin/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
+            List<Question> questions = (List<Question>)TempData.Peek("list");
+            String categorySelected = (String)TempData.Peek("category");
+            if (categorySelected == "All categories")
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                TempData.Remove("list");
             }
-            User user = db.users.Find(id);
-            if (user == null)
+            if (questions == null)
+                questions = db.questions.ToList();
+            questions = questions.ToList().FindAll(x => x.MyChannel == null);
+            QuestionCategoriesClass qc = new QuestionCategoriesClass();
+            qc.questions = questions;
+            List<String> categories = new List<String>();
+            categories.Add("All categories");
+            foreach (QuestionCategories category in db.categories.ToList())
             {
-                return HttpNotFound();
+                categories.Add(category.Category);
             }
-            return View(user);
-        }
-
-        // GET: Admin/Create
-        public ActionResult Create()
-        {
+            categories.Add("My questions");
+            qc.categories = categories;
+            if (categorySelected != null)
+            {
+                qc.selected = categorySelected;
+            }
+            else
+            {
+                qc.selected = "All categories";
+            }
+            Pager pager = new Pager(questions.ToList().Count, page);
+            QuestionPager questpager = new QuestionPager
+            {
+                Items = questions.ToList().Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize).ToList(),
+                Pager = pager
+            };
+            qc.qp = questpager;
+            ViewBag.Questions = qc;
             return View();
         }
 
-        // POST: Admin/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        public ActionResult openSetupPage()
+        {
+            ViewBag.stats = db.setup.ToList().First();
+            ViewBag.categories = db.categories.ToList();
+            return View("SetupPage");
+        }
+
+        public ActionResult openQuestion(int index)
+        {
+            Question question = db.questions.ToList().Find(x => x.Id == index);
+            List<Reply> replies = null;
+            if (question.Replies != null)
+            {
+                replies = question.Replies.ToList();
+            }
+            QuestionAnswersClass q = new QuestionAnswersClass();
+            q.filters = new List<String>();
+            q.filters.Add("Least recent"); q.filters.Add("Most recent"); q.filters.Add("Best rated"); q.filters.Add("Worst rated");
+            q.selectedFilter = "Least recent";
+            q.question = question;
+            q.allReplies = replies;
+            ViewBag.returnVal = q;
+            return View("questionThread");
+        }
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,LastName,Mail,Password,Tokens,Status,Role")] User user)
+        public void removeCategory(String dataValue)
         {
-            if (ModelState.IsValid)
+            QuestionCategories qc = db.categories.ToList().Find(x => x.Category == dataValue);
+            foreach (var question in db.questions.ToList())
             {
-                db.users.Add(user);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (question.Category == qc)
+                {
+                    foreach (var replies in db.replies.ToList())
+                    {
+                        if (replies.ReplyToWhichQuestion==question)
+                        {
+                            foreach (var grade in db.grades.ToList())
+                            {
+                                if (grade.ReplyId==replies.Id)
+                                {
+                                    db.grades.Remove(grade);
+                                }
+                            }
+                            db.replies.Remove(replies);
+                        }
+                    }
+                    db.questions.Remove(question);
+                }
             }
-
-            return View(user);
+            db.categories.Remove(qc);
+            db.SaveChanges();
         }
 
-        // GET: Admin/Edit/5
-        public ActionResult Edit(int? id)
+        public void addCategory(String dataValue)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            User user = db.users.Find(id);
-            if (user == null)
-            {
-                return HttpNotFound();
-            }
-            return View(user);
+            QuestionCategories qc = new QuestionCategories { Category = dataValue };
+            db.categories.Add(qc);
+            db.SaveChanges();
         }
 
-        // POST: Admin/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,LastName,Mail,Password,Tokens,Status,Role")] User user)
+        public ActionResult changeSetup(float ps, float pg, float pp, int asi, int ag, int ap, int cas, int cag, int cap)
         {
-            if (ModelState.IsValid)
-            {
-                db.Entry(user).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(user);
+            Setup setup = db.setup.First();
+            setup.PriceSilver = ps;
+            setup.PriceGold = pg;
+            setup.PricePlat = pp;
+            setup.AmountSilver = asi;
+            setup.AmountGold = ag;
+            setup.AmountPlat = ap;
+            setup.ChannelAmountSilver = cas;
+            setup.ChannelAmountGold = cag;
+            setup.ChannelAmountPlat = cap;
+            db.SaveChanges();
+            return RedirectToAction("openSetupPage");
         }
 
-        // GET: Admin/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult goToMyProfile()
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            User user = db.users.Find(id);
-            if (user == null)
-            {
-                return HttpNotFound();
-            }
-            return View(user);
+            User u = (User)Session["user"];
+            ViewBag.User = u;
+            return View("../Shared/profilePage");
+        }
+        public ActionResult logout()
+        {
+            Session.Remove("user");
+            return RedirectToAction("Index", "Home");
         }
 
-        // POST: Admin/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        [HttpGet]
+        public ActionResult searchByWord(String text)
         {
-            User user = db.users.Find(id);
-            db.users.Remove(user);
+            List<Question> questionss;
+            if (TempData["list"] == null || (TempData["category"] == null))
+            {
+                questionss = db.questions.ToList().FindAll(x => x.Title.Contains(text) == true);
+            }
+            else
+            {
+                questionss = ((List<Question>)TempData.Peek("list")).FindAll(x => x.Title.Contains(text) == true);
+            }
+            TempData["list"] = questionss;
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult filterCategory(String category)
+        {
+            List<Question> questions = null;
+            if (category == "My questions")
+            {
+                questions = db.questions.ToList().FindAll(x => x.Author.Name.Equals(((User)Session["user"]).Name) && x.Author.LastName.Equals(((User)Session["user"]).LastName));
+                TempData["list"] = questions;
+            }
+            else if (category != "All categories")
+            {
+                questions = db.questions.ToList().FindAll(x => x.Category.Category.Equals(category));
+            }
+            TempData["list"] = questions;
+            TempData["category"] = category;
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult filterReplies(String category, int question)
+        {
+            Question questionn = db.questions.ToList().Find(x => x.Id == question);
+            List<Reply> replies = db.replies.ToList().FindAll(x => x.ReplyToWhichQuestion.Id == questionn.Id);
+            QuestionAnswersClass q = new QuestionAnswersClass();
+            q.filters = new List<String>();
+            q.filters.Add("Least recent"); q.filters.Add("Most recent"); q.filters.Add("Best rated"); q.filters.Add("Worst rated");
+            switch (category)
+            {
+                case "Least recent": { replies.Sort(new DateComparer()); q.selectedFilter = "Least recent"; } break;
+                case "Most recent": { replies.Sort(new DateComparer()); replies.Reverse(); q.selectedFilter = "Most recent"; } break;
+                case "Best rated":
+                    replies.Sort(delegate (Reply x, Reply y)
+                    {
+                        q.selectedFilter = "Best rated";
+                        if (x.MinusGrades > y.MinusGrades)
+                            return 1;
+                        else if (y.MinusGrades > x.MinusGrades)
+                            return -1;
+                        else
+                            return 0;
+                    }); break;
+
+                case "Worst rated":
+                    replies.Sort(delegate (Reply x, Reply y)
+                    {
+                        q.selectedFilter = "Worst rated";
+                        if (x.PlusGrades > y.PlusGrades)
+                            return 1;
+                        else if (y.PlusGrades > x.PlusGrades)
+                            return -1;
+                        else
+                            return 0;
+                    }); break;
+            }
+            q.question = questionn;
+            q.allReplies = replies;
+            ViewBag.returnVal = q;
+            return View("questionThread");
+        }
+
+        public ActionResult lockQuestion(int questionId)
+        {
+            Question q = db.questions.ToList().Find(x => x.Id == questionId);
+            q.Status = 1;
+            db.SaveChanges();
+            return RedirectToAction("openQuestion", new { index = questionId });
+        }
+
+        public ActionResult deleteQuestion(int questionId)
+        {
+            Question q = db.questions.ToList().Find(x => x.Id == questionId);
+            foreach (var reply in db.replies.ToList())
+            {
+                if (reply.ReplyToWhichQuestion == q)
+                {
+                    db.replies.Remove(reply);
+                }
+            }
+            db.questions.Remove(q);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
     }
 }

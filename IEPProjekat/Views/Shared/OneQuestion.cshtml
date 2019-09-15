@@ -3,11 +3,9 @@
 @{ 
     var text = "";
     var flag = false;
-    var flagLock = "closedLock.png";
     var flagBackground = "border-danger";
     if (Model.Status==1)
     {
-        flagLock = "openLock.png";
         flagBackground = "border-primary";
     }
     if (Model.Text.Length > 255)
@@ -25,7 +23,7 @@
     <div class="col-12">
         <div class="row">
             <div class="col-3">
-                <div style="width:250px; height:140px;"><a href="@Url.Action("openQuestion", new { index = Model.Id })"><img style="width:100%; height:100%;"src="@Url.Content("~/" + Model.Picture)" alt="Failed to load image"/></a></div>
+                <div style="width:200px; height:200px;"><a href="@Url.Action("openQuestion", new { index = Model.Id })"><img style="width:100%; height:100%;"src="@Url.Content("~/" + Model.Picture)" alt="Failed to load image"/></a></div>
             </div>
             <div class="col-9">
                 <div class="row">
@@ -36,7 +34,16 @@
                                 <h5 style="display:inline;"> : &nbsp;@Model.Author.Name  @Model.Author.LastName</h5>
                             </div>
                             <div class="col-1">
-                                <div style="width:20px; height:20px;"><img style="width:100%; height:100%;" src="@Url.Content("~/"+flagLock)" /></div>
+                                @{ if (Model.Status == 1)
+                                    {
+                                        <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa fa-lock" aria-hidden="true"></i>
+                                    }
+                                }
+                                <div style="width:20px; height:20px;"></div>
                             </div>
                         </div>
                      </div>

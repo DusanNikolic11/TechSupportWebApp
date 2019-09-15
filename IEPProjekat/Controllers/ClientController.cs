@@ -60,6 +60,12 @@ namespace IEPProjekat.Controllers
             return View();
         }
 
+        public ActionResult clearSearch()
+        {
+            TempData.Remove("list");
+            return RedirectToAction("Index");
+        }
+
         public ActionResult goToMyProfile()
         {
             User u = (User)Session["user"];
@@ -114,6 +120,9 @@ namespace IEPProjekat.Controllers
                  replies = question.Replies.ToList();
             }
             QuestionAnswersClass q = new QuestionAnswersClass();
+            q.filters = new List<String>();
+            q.filters.Add("Least recent"); q.filters.Add("Most recent"); q.filters.Add("Best rated"); q.filters.Add("Worst rated");
+            q.selectedFilter = "Least recent";
             q.question = question;
             q.allReplies = replies;
             ViewBag.returnVal = q;
@@ -126,6 +135,7 @@ namespace IEPProjekat.Controllers
             DateTime dt = DateTime.Now;
             Question question = db.questions.ToList().Find(x => x.Id == questionId);
             Reply reply = new Reply() { Text = text, ReplyToWhichQuestion = question, ReplyAuthor = (User)Session["user"], Moment = dt, ReplyToWhichReply = null, PlusGrades = 0, MinusGrades = 0, MyChannel = null };
+            reply.Grades = new List<Grade>();
             db.replies.Add(reply);
             db.SaveChanges();
             return RedirectToAction("openQuestion", new { index = questionId });
@@ -148,10 +158,19 @@ namespace IEPProjekat.Controllers
             return RedirectToAction("Index");
         }
 
-        public void rateReply(int replyId, int value)
+        [HttpPost]
+        public ActionResult rateReply(String replyId, String value)
         {
-            Reply reply = db.replies.ToList().Find(x => x.Id == replyId);
-            if (value==1)
+            int intReplyId = int.Parse(replyId);
+            int intValue = int.Parse(value);
+            Reply reply = db.replies.ToList().Find(x => x.Id == intReplyId);
+            User rater = (User)Session["user"];
+            Grade gg = db.grades.ToList().Find(x => x.ReplyId == reply.Id && x.UserId == rater.Id);
+            if (gg!=null)
+            {
+                return Json(new { success = false, responseText = "The attached file is not supported." }, JsonRequestBehavior.AllowGet);
+            }
+            if (intValue==1)
             {
                 reply.PlusGrades++;
             }
@@ -159,11 +178,12 @@ namespace IEPProjekat.Controllers
             {
                 reply.MinusGrades++;
             }
-            Grade g = new Grade() {ReplyId=reply.Id, UserId=((User)Session["user"]).Id, Reply = reply, User = (User)Session["user"], Value = value };
-            reply.Grades.Add(g);
+            Grade g = new Grade() {ReplyId=reply.Id, UserId=((User)Session["user"]).Id, Reply = reply, User = (User)Session["user"], Value = intValue };
             ((User)Session["user"]).Grades.Add(g);
+            reply.Grades.Add(g);
             db.grades.Add(g);
             db.SaveChanges();
+            return Json(new { success = true, responseText = "Your message successfuly sent!" }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -193,18 +213,30 @@ namespace IEPProjekat.Controllers
         public ActionResult deleteQuestion(int questionId)
         {
             Question q = db.questions.ToList().Find(x => x.Id == questionId);
+            foreach (var reply in db.replies.ToList())
+            {
+                if (reply.ReplyToWhichQuestion==q)
+                {
+                    db.replies.Remove(reply);
+                }
+            }
             db.questions.Remove(q);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
 
-        public ActionResult openBuyTokensPage()
+        public ActionResult openBuyTokensPage(String message=null)
         {
+            ViewBag.purchases = db.purchases.ToList().FindAll(x=>x.Customer.Id==((User)Session["user"]).Id);
+            ViewBag.message = message;
+            ViewBag.setup = db.setup.First();
             return View("BuyTokens");
         }
 
+        [HttpPost]
         public ActionResult buyTokens(int id)
         {
+            Session["tokenID"] = id;
             return RedirectToAction("PaymentWithPaypal", "Client");
         }
 
@@ -255,50 +287,46 @@ namespace IEPProjekat.Controllers
                     //If executed payment failed then we will show payment failure message to user  
                     if (executedPayment.state.ToLower() != "approved")
                     {
-                        return RedirectToAction("info", "client", new { message = "unsuccessful" });
+                        return RedirectToAction("openBuyTokensPage", "Client", new { message = "unsuccessful" });
                     }
                 }
             }
             catch (Exception ex)
             {
                 var mess = ex.Message;
-                return RedirectToAction("info", "client", new { message = "unsuccessful"});
+                return RedirectToAction("openBuyTokensPage", "Client", new { message = "unsuccessful"});
             }
             //on successful payment, show success page to user. 
-            /*
-            SysDef sysdef = db.definitions.Find(1);
-            Orders order = new Orders();
+            Setup setup = db.setup.First();
+            Purchase purchase = new Purchase();
             User user = (User)Session["user"];
-            int id = (int)Session["orderNumber"];
-            user = db.users.Find(user.Id);
-            order.user = user;
-            order.userId = user.Id;
-            order.moment = DateTime.Now;
+            int id = (int)Session["tokenID"];
+            purchase.Customer = user;
+            purchase.Moment = DateTime.Now;
             if (id == 1)
             {
-                order.amount = sysdef.silverAmount;
-                order.price = sysdef.silverPrice;
-                user.tokens += order.amount;
-                order.type = Orders.orderType.SILVER;
+                purchase.Amount = setup.AmountSilver;
+                purchase.TotalPrice = setup.PriceSilver *setup.AmountSilver;
+                user.Tokens += purchase.Amount;
+                purchase.Type = "Silver";
             }
             if (id == 2)
             {
-                order.amount = sysdef.goldAmount;
-                order.price = sysdef.goldPrice;
-                user.tokens += order.amount;
-                order.type = Orders.orderType.GOLD;
+                purchase.Amount = setup.AmountGold;
+                purchase.TotalPrice = setup.PriceGold * setup.AmountGold;
+                user.Tokens += purchase.Amount;
+                purchase.Type = "Gold";
             }
             if (id == 3)
             {
-                order.amount = sysdef.platinumAmount;
-                order.price = sysdef.platinumPrice;
-                user.tokens += order.amount;
-                order.type = Orders.orderType.PLATINUM;
+                purchase.Amount = setup.AmountPlat;
+                purchase.TotalPrice = setup.PricePlat * setup.AmountPlat;
+                user.Tokens += purchase.Amount;
+                purchase.Type = "Platinum";
             }
-            db.orders.Add(order);
+            db.purchases.Add(purchase);
             db.SaveChanges();
-            */
-            return RedirectToAction("info", "client", new { message = "successful"});
+            return RedirectToAction("openBuyTokensPage", "Client", new { message = "successful"});
         }
 
         private PayPal.Api.Payment payment;
@@ -318,32 +346,42 @@ namespace IEPProjekat.Controllers
 
         public Payment CreatePayment(APIContext apiContext, string redirectUrl)
         {
-            var name = "kupovina";
             //create itemlist and add item objects to it
             var itemList = new ItemList() { items = new List<Item>() };
-
-            //SysDef sysdef = db.definitions.Find(1);
-            /*string name = "";
-            int id = (int)Session["orderNumber"];
+            string price = "";
+            string quan = "";
+            float total = 0;
+            Setup setup = db.setup.First();
+            string name = "Token purchase - ";
+            int id = (int)Session["tokenID"];
             if (id == 1)
             {
-                name = "Silver Package";
+                name += "Silver Package";
+                price = setup.PriceSilver.ToString();
+                quan = setup.AmountSilver.ToString();
+                total = (setup.PriceSilver * setup.AmountSilver);
             }
             if (id == 2)
             {
-                name = "Gold Package";
+                name += "Gold Package";
+                price = setup.PriceGold.ToString();
+                quan = setup.AmountGold.ToString();
+                total = (setup.PriceGold * setup.AmountGold);
             }
             if (id == 3)
             {
-                name = "Platinum Package";
-            }*/
+                name += "Platinum Package";
+                price = setup.PricePlat.ToString();
+                quan = setup.AmountPlat.ToString();
+                total = (setup.PricePlat * setup.AmountPlat);
+            }
             //Adding Item Details like name, currency, price etc
             itemList.items.Add(new Item()
             {
                 name = name,
                 currency = "USD",
-                price = "0.4",
-                quantity = "1",
+                price = price,
+                quantity = quan,
                 sku = "sku"
             });
 
@@ -359,17 +397,17 @@ namespace IEPProjekat.Controllers
             // Adding Tax, shipping and Subtotal details
             var details = new Details()
             {
-                tax = "0.1",
-                shipping = "0.1",
-                subtotal = "0.4",
-                shipping_discount = "-0.1"
+                tax = "0",
+                shipping = "0",
+                subtotal = total.ToString(),
+                shipping_discount = "0"
             };
 
             //Final amount with details
             var amount = new Amount()
             {
                 currency = "USD",
-                total = "0.5", // Total must be equal to sum of tax, shipping and subtotal.
+                total = total.ToString(), // Total must be equal to sum of tax, shipping and subtotal.
                 details = details
             };
 
@@ -405,7 +443,73 @@ namespace IEPProjekat.Controllers
         {
             return View("../Shared/ChannelWindow");
         }
-    }
 
-    
+        [HttpPost]
+        public PartialViewResult replyToReply(String text, String wc, String wr)
+        {
+            Question q = db.questions.ToList().Find(x => x.Id == int.Parse(wc));
+            Reply r = db.replies.ToList().Find(x => x.Id == int.Parse(wr));
+            Reply newr = new Reply() { Text = text, ReplyToWhichQuestion = q, ReplyAuthor = (User)Session["user"], Moment = DateTime.Now, Grades = new List<Grade>(), ReplyToWhichReply = r, PlusGrades = 0, MinusGrades = 0 };
+            q.Replies.Add(newr);
+            db.replies.Add(newr);
+            db.SaveChanges();
+            AnswerAnswerClass aac = new AnswerAnswerClass { reply = newr, allReplies = new List<Reply>(), offset = 1 };
+            aac.allReplies.Add(newr);
+            /*if (r.ReplyToWhichReply==null)
+            {
+                aac.offset = 1;
+            }
+            else
+            {
+                while (r.ReplyToWhichReply != null)
+                {
+                    aac.offset++;
+                    r = r.ReplyToWhichReply;
+                }
+            }*/
+            PartialViewResult pvr = PartialView("OneReply", aac);
+            return pvr;
+        }
+
+        public ActionResult filterReplies(String category, int question)
+        {
+            Question questionn = db.questions.ToList().Find(x => x.Id == question);
+            List<Reply> replies = db.replies.ToList().FindAll(x => x.ReplyToWhichQuestion.Id == questionn.Id);
+            QuestionAnswersClass q = new QuestionAnswersClass();
+            q.filters = new List<String>();
+            q.filters.Add("Least recent"); q.filters.Add("Most recent"); q.filters.Add("Best rated"); q.filters.Add("Worst rated");
+            switch (category)
+            {
+                case "Least recent": { replies.Sort(new DateComparer()); q.selectedFilter = "Least recent"; } break;
+                case "Most recent": { replies.Sort(new DateComparer()); replies.Reverse(); q.selectedFilter = "Most recent"; } break;
+                case "Best rated":
+                    replies.Sort(delegate (Reply x, Reply y)
+                    {
+                        q.selectedFilter = "Best rated";
+                        if (x.MinusGrades > y.MinusGrades)
+                            return 1;
+                        else if (y.MinusGrades > x.MinusGrades)
+                            return -1;
+                        else
+                            return 0;
+                    }); break;
+
+                case "Worst rated":
+                    replies.Sort(delegate (Reply x, Reply y)
+                    {
+                        q.selectedFilter = "Worst rated";
+                        if (x.PlusGrades > y.PlusGrades)
+                            return 1;
+                        else if (y.PlusGrades > x.PlusGrades)
+                            return -1;
+                        else
+                            return 0;
+                    }); break;
+            }
+            q.question = questionn;
+            q.allReplies = replies;
+            ViewBag.returnVal = q;
+            return View("questionThread");
+        }
+    }
 }

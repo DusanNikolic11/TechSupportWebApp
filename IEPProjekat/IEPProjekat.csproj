@@ -271,16 +271,27 @@
     <Compile Include="Migrations\201909021854232_added-categories-tableAndChangedQuestionsToHaveCategoriesAsFieldInsteadOfStringForCategories.Designer.cs">
       <DependentUpon>201909021854232_added-categories-tableAndChangedQuestionsToHaveCategoriesAsFieldInsteadOfStringForCategories.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201909141251588_Adding-System-Setup-Class.cs" />
+    <Compile Include="Migrations\201909141251588_Adding-System-Setup-Class.Designer.cs">
+      <DependentUpon>201909141251588_Adding-System-Setup-Class.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909141744423_added-purchase-table-for-token-purchases.cs" />
+    <Compile Include="Migrations\201909141744423_added-purchase-table-for-token-purchases.Designer.cs">
+      <DependentUpon>201909141744423_added-purchase-table-for-token-purchases.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\AnswerAnswerClass.cs" />
     <Compile Include="Models\Channel.cs" />
     <Compile Include="Models\DateComparer.cs" />
     <Compile Include="Models\Grade.cs" />
+    <Compile Include="Models\Purchase.cs" />
     <Compile Include="Models\Question.cs" />
     <Compile Include="Models\QuestionAnswersClass.cs" />
     <Compile Include="Models\QuestionCategories.cs" />
     <Compile Include="Models\QuestionCategoriesClass.cs" />
     <Compile Include="Models\QuestionPager.cs" />
     <Compile Include="Models\Reply.cs" />
+    <Compile Include="Models\Setup.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="PayPalConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -334,7 +345,7 @@
     <Content Include="Scripts\MyBootstrap.min.js" />
     <Content Include="Views\Home\RegisterPage.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
-    <Content Include="Views\Client\Index.cshtml" />
+    <Content Include="Views\Shared\Index.cshtml" />
     <Content Include="Views\Shared\_LayoutLoggedIn.cshtml" />
     <Content Include="Views\Shared\profilePage.cshtml" />
     <Content Include="Views\Agent\Index.cshtml" />
@@ -345,10 +356,10 @@
     <Content Include="Views\Client\BuyTokens.cshtml" />
     <Content Include="Views\Client\info.cshtml" />
     <Content Include="Views\Shared\ChannelWindow.cshtml" />
+    <Content Include="Views\Admin\SetupPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Admin\" />
     <Folder Include="Views\PayPal\" />
     <Folder Include="Views\Pictures\" />
   </ItemGroup>
@@ -386,6 +397,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201909021854232_added-categories-tableAndChangedQuestionsToHaveCategoriesAsFieldInsteadOfStringForCategories.resx">
       <DependentUpon>201909021854232_added-categories-tableAndChangedQuestionsToHaveCategoriesAsFieldInsteadOfStringForCategories.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909141251588_Adding-System-Setup-Class.resx">
+      <DependentUpon>201909141251588_Adding-System-Setup-Class.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909141744423_added-purchase-table-for-token-purchases.resx">
+      <DependentUpon>201909141744423_added-purchase-table-for-token-purchases.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

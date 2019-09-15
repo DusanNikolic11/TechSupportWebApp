@@ -245,3 +245,5 @@ C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.AspNet.SignalR
 C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.Owin.xml
 C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.Owin.Host.SystemWeb.xml
 C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\bin\Microsoft.Owin.Security.xml
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\obj\Debug\IEPProjekat.Migrations.AddingSystemSetupClass.resources
+C:\Users\Windows 10\Desktop\IEPProjekat\IEPProjekat\obj\Debug\IEPProjekat.Migrations.addedpurchasetablefortokenpurchases.resources

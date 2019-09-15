@@ -9,5 +9,9 @@ namespace IEPProjekat.Models
     {
         public Question question { get; set; }
         public List<Reply> allReplies { get; set; }
+
+        public String selectedFilter { get; set; }
+
+        public List<String> filters { get; set; }
     }
 }
