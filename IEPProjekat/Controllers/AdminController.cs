@@ -223,6 +223,7 @@ namespace IEPProjekat.Controllers
         public ActionResult lockQuestion(int questionId)
         {
             Question q = db.questions.ToList().Find(x => x.Id == questionId);
+            q.LastLockTime = DateTime.Now;
             q.Status = 1;
             db.SaveChanges();
             return RedirectToAction("openQuestion", new { index = questionId });
@@ -243,5 +244,44 @@ namespace IEPProjekat.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult openAllUsers()
+        {
+            ViewBag.users = db.users.ToList();
+            return View("allUsers");
+        }
+
+        [HttpPost]
+        public ActionResult changeRole(String userId, String newR)
+        {
+            int id = int.Parse(userId);
+            User u = db.users.ToList().Find(x => x.Id == id);
+            u.Role = newR;
+            db.SaveChanges();
+            return Json(new { success = true, responseText = "Your message successfuly sent!" }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult changeStatus(String userId, String newR)
+        {
+            int id = int.Parse(userId);
+            User u = db.users.ToList().Find(x => x.Id == id);
+            u.Status = newR;
+            db.SaveChanges();
+            return Json(new { success = true, responseText = "Your message successfuly sent!" }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult changeEverything(String userId, String newName, String newEmail, String newTokens)
+        {
+            int id = int.Parse(userId);
+            int tokens = int.Parse(newTokens);
+            User u = db.users.ToList().Find(x => x.Id == id);
+            u.Name = newName.Split(' ')[0];
+            u.LastName = newName.Split(' ')[1];
+            u.Mail = newEmail;
+            u.Tokens = tokens;
+            db.SaveChanges();
+            return Json(new { success = true, responseText = "Your message successfuly sent!" }, JsonRequestBehavior.AllowGet);
+        }
     }
 }

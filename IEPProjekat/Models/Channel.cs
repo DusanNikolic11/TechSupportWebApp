@@ -13,10 +13,12 @@ namespace IEPProjekat.Models {
         public virtual User UserOpener { get; set; }
         public virtual ICollection<User> Agents { get; set; }
         public virtual ICollection<Question> Questions { get; set; }
-        public virtual ICollection<Reply> Replies { get; set; }
+        public DateTime Moment { get; set; }
         [Required]
         public int Status { get; set; }
         [Required]
         public int Price { get; set; }
+        [Required]
+        public int NumberOfAgents { get; set; }
     }
 }

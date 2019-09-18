@@ -279,9 +279,18 @@
     <Compile Include="Migrations\201909141744423_added-purchase-table-for-token-purchases.Designer.cs">
       <DependentUpon>201909141744423_added-purchase-table-for-token-purchases.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201909171133589_modified-channels-class.cs" />
+    <Compile Include="Migrations\201909171133589_modified-channels-class.Designer.cs">
+      <DependentUpon>201909171133589_modified-channels-class.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909171424082_added-field-number-of-agents.cs" />
+    <Compile Include="Migrations\201909171424082_added-field-number-of-agents.Designer.cs">
+      <DependentUpon>201909171424082_added-field-number-of-agents.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AnswerAnswerClass.cs" />
     <Compile Include="Models\Channel.cs" />
+    <Compile Include="Models\ChannelSetupClass.cs" />
     <Compile Include="Models\DateComparer.cs" />
     <Compile Include="Models\Grade.cs" />
     <Compile Include="Models\Purchase.cs" />
@@ -354,9 +363,9 @@
     <Content Include="Views\Shared\questionThread.cshtml" />
     <Content Include="Views\Shared\OneReply.cshtml" />
     <Content Include="Views\Client\BuyTokens.cshtml" />
-    <Content Include="Views\Client\info.cshtml" />
     <Content Include="Views\Shared\ChannelWindow.cshtml" />
     <Content Include="Views\Admin\SetupPage.cshtml" />
+    <Content Include="Views\Admin\allUsers.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -403,6 +412,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201909141744423_added-purchase-table-for-token-purchases.resx">
       <DependentUpon>201909141744423_added-purchase-table-for-token-purchases.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909171133589_modified-channels-class.resx">
+      <DependentUpon>201909171133589_modified-channels-class.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909171424082_added-field-number-of-agents.resx">
+      <DependentUpon>201909171424082_added-field-number-of-agents.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

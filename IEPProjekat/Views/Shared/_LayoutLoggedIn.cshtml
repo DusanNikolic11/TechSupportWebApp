@@ -8,7 +8,7 @@
     @Styles.Render("~/Content/MyBootstrap.css")
     @Scripts.Render("~/bundles/modernizr")
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    @{ var controller = ((IEPProjekat.Models.User)Session["user"]).Role;}
+    @{ var controller = ViewContext.RouteData.GetRequiredString("controller");}
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-primary navbar-fixed-top">
@@ -31,7 +31,7 @@
                         <a class="dropdown-item" href="@Url.Action("goToMyProfile", @controller)">My profile</a>
                         @{if (controller == "Client")
                             {
-                            <a class="dropdown-item" href="@Url.Action("openBuyTokensPage", "Client")">Buy tokens</a>
+                                <a class="dropdown-item" href="@Url.Action("openBuyTokensPage", "Client")">Buy tokens</a>
                             }
                         }
                         @{if (controller == "Client" || controller == "Agent")
@@ -42,6 +42,7 @@
                         @{if (controller == "Admin")
                             {
                                 <a class="dropdown-item" href="@Url.Action("openSetupPage", "Admin")">Setup</a>
+                                <a class="dropdown-item" href="@Url.Action("openAllUsers", "Admin")">Users</a>
                             }
                         }
                         <div class="dropdown-divider"></div>

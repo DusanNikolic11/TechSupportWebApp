@@ -1,30 +1,57 @@
-﻿
+﻿@model IEPProjekat.Models.ChannelSetupClass
 @{
     ViewBag.Title = "ChannelWindow";
     Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
+    var controller = ViewContext.RouteData.GetRequiredString("controller");
+    var logged = (IEPProjekat.Models.User)Session["user"];
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>SignalR Simple Chat</title>
-    <style type="text/css">
-        .container {
-            background-color: #99CCFF;
-            border: thick solid #808080;
-            padding: 20px;
-            margin: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <input type="text" id="message" />
-        <input type="button" id="sendmessage" value="Send" />
-        <input type="hidden" id="displayname" />
-        <ul id="discussion">
-        </ul>
+
+    <div class="row pt-5">
+        <div class="col">
+            <div class="row pb-5">
+                <div class="col-12">
+                    <button onclick="location.href='@Url.Action("createChannel", "Client")'" type="button" class="btn btn-primary btn-lg mr-2">Create channel!</button><label>Price to open channel: @ViewBag.returnVal.setup.ChannelAmountSilver tokens</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="row" style="height:800px;">
+                <div class="col-5 border border-primary">
+                    <table class="table table-striped">
+                        <tbody>
+                            @{ var index = 1;
+                                <tr>
+                                    <th scope="row">#</th>
+                                    <td>Creator</td>
+                                    <td>Time</td>
+                                    <td>Agents</td>
+                                </tr>
+                                foreach (var channel in ViewBag.returnVal.channels)
+                                {
+                                    <tr>
+                                        <th scope="row">@index</th>
+                                        <td><a class="openOneChannel" data-value="@channel.Id">@channel.UserOpener.Name @channel.UserOpener.LastName</a></td>
+                                        <td>@channel.Moment</td>
+                                        <td>@channel.Agents.Count</td>
+                                    </tr>
+                                    index++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-7 border border-primary border-left-0">
+                    <ul id="messageContainer" style="height:90%;">
+                    </ul>
+                    <div class="row"><div class="col-10 text-right"><input type="text" id="message" style="width:100%;" class="mr-3"/></div><div class="col-2"><input type="button" class="mr-4" id="sendmessage" value="Send" /></div></div>
+                    
+                    <input type="hidden" id="displayname" />
+                </div>
+            </div>
+        </div>
     </div>
+
     @section scripts {
         <!--Reference the SignalR library. -->
         <script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
@@ -32,27 +59,52 @@
         <script src="~/signalr/hubs"></script>
         <!--Add script to update the page and send messages.-->
         <script type="text/javascript">
+            var group = "";
             $(function () {
                 // Declare a proxy to reference the hub.
                 var chat = $.connection.chatHub;
                 // Create a function that the hub can call to broadcast messages.
                 chat.client.broadcastMessage = function (name, message) {
-                    // Html encode display name and message.
-                    var encodedName = $('<div />').text(name).html();
-                    var encodedMsg = $('<div />').text(message).html();
-                    // Add the message to the page.
-                    $('#discussion').append('<li><strong>' + encodedName
-                        + '</strong>:&nbsp;&nbsp;' + encodedMsg + '</li>');
+                    $('#messageContainer').append('<li><strong>' + name + ": " + message +'</li>');
                 };
-                // Get the user name and store it to prepend to messages.
-                $('#displayname').val(prompt('Enter your name:', ''));
                 // Set initial focus to message input box.
                 $('#message').focus();
+                $(".openOneChannel").click(function () {
+                    var role = "@controller";
+                    chat.server.leaveGroup(group, role);         
+                    var id = $(this).data("value");
+                    var name = $(this).text();
+                    group = name + " " +id;
+                    chat.server.joinGroup(name, id, role);
+                    $.ajax({
+                        type: "GET",
+                        url: "getMessages",
+                        data: { channelId: id, },
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        error: function (response) {
+                            alert("Error!");
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                $("#messageContainer").empty();
+                                var array = response.answer.split(";");
+                                for (i = 0; i < array.length-1; i++) {
+                                    $("#messageContainer").append("<li><strong>" + array[i] + " " + array[i + 1] + ": " + array[i + 2] + "</li>");
+                                    i = i + 2;
+                                }
+                            }
+                            else {
+                                alert("Your request couldn't be completed because you've already rated this reply!");
+                            }  
+                        }
+                    })
+                })
                 // Start the connection.
                 $.connection.hub.start().done(function () {
                     $('#sendmessage').click(function () {
                         // Call the Send method on the hub.
-                        chat.server.send($('#displayname').val(), $('#message').val());
+                        chat.server.send("@logged.Name @logged.LastName", $("#message").val(), group);
                         // Clear text box and reset focus for next comment.
                         $('#message').val('').focus();
                     });
@@ -60,6 +112,4 @@
             });
         </script>
     }
-</body>
-</html>
 

@@ -1,16 +1,174 @@
-﻿@model IEPProjekat.Models.Reply
-    <div class="row">
-        <div class="col-9">
+﻿@model IEPProjekat.Models.AnswerAnswerClass
+@{ var controller = ViewContext.RouteData.GetRequiredString("controller");
+}
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#upvoteButton"+"@Model.reply.Id").hover(function () {
+                if ("@controller" == "Home") { $(this).attr("disabled", true); }
+                else {$(this).toggleClass("btn-primary");}
+            })
+        })
+        $(document).ready(function () {
+            $("#downvoteButton" + "@Model.reply.Id").hover(function () {
+                if ("@controller" == "Home") { $(this).attr("disabled", true); }
+                else {$(this).toggleClass("btn-primary");}
+            })
+        })
+        $(document).ready(function () {
+            $("#upvoteButton" + "@Model.reply.Id").click(function () {
+                var idR = $(this).attr("id").split("Button")[1];
+                var value = 1;
+                $.ajax({
+                    type: "POST",
+                    url: "rateReply",
+                    data: { replyId:idR, value:value },
+                    error: function (response) {
+                        alert("Error!");
+                    },
+                success: function (response) {
+                    if (response.success) {
+                        var plus = $("#plusGrades" + idR).text();
+                        var pluss = parseInt(plus, 10) + 1;
+                        $("#plusGrades" + idR).text(pluss + "");
+                    }
+                    else {
+                        alert("Your request couldn't be completed because you've already rated this reply!");
+                    }  
+                    }
+                })
+            })
+        })
+        $(document).ready(function () {
+            $("#downvoteButton" + "@Model.reply.Id").click(function () {
+                var idR = $(this).attr("id").split("Button")[1];
+                var value = -1;
+                $.ajax({
+                        type: "POST",
+                        url: "rateReply",
+                        data: { replyId:idR, value:value },
+                        error: function (response) {
+                            alert("Error!");
+                        },
+                    success: function (response) {
+                        if (response.success) {
+                            var plus = $("#minusGrades" + idR).text();
+                            var pluss = parseInt(plus, 10) + 1;
+                            $("#minusGrades" + idR).text(pluss + "");
+                        }
+                        else {
+                            alert("Your request couldn't be completed because you've already rated this reply!");
+                        }  
+                        }
+                    })
+            })
+        })
+        $(document).ready(function () {
+            $("#replyButton"+"@Model.reply.Id").hover(function () {
+                if ("@controller" == "Home") { $(this).attr("disabled", true); }
+                else {$(this).toggleClass("btn-primary");}
+            })
+        })
+        $(document).ready(function () {
+            $("#replyButton"+"@Model.reply.Id").click(function () {
+                $("#replyForm"+"@Model.reply.Id").toggleClass("d-none");
+            })
+        })
+        $(document).ready(function () {
+            $("#submitReply"+"@Model.reply.Id").click(function () {
+                var text = $("#exampleFormControlTextarea"+"@Model.reply.Id").val();
+                var whichQuestion = $("#questionId"+"@Model.reply.Id").val();
+                var whichReply = $("#replyId"+"@Model.reply.Id").val();
+                $.ajax({
+                    type: "POST",
+                    url: "replyToReply",
+                    dataType: 'html',
+                    data: { text: text, wc: whichQuestion, wr: whichReply },
+                    error: function (data) {
+                        alert("Your request couldn't be completed right now, please try again later!");
+                    },
+                    complete: function (data) {
+                        $("#toFill" + "@Model.reply.Id").append(data.responseText);
+                        $("#replyForm" + "@Model.reply.Id").toggleClass("d-none");
+                        $("exampleFormControlTextarea" + "@Model.reply.Id").val("");
+                    }
+                })
+            })
+        })
+
+    </script>
+    <div class="row mt-3">
+        <div class="col-@(12 - Model.offset) offset-@Model.offset border-left border-primary">
             <div class="row">
-                <div class="col-12">
-                    <div class="row"><div class="col"><h6>By: @Model.ReplyAuthor.Name @Model.ReplyAuthor.LastName</h6></div></div>
-                    <div class="row"><div class="col"><p>@Model.Text</p></div></div>
-                    <div class="row"><div class="col"><p>Plus: @Model.PlusGrades /// Minus :@Model.MinusGrades</p></div></div>
-                    <div class="row">
-                        <div class="col-1"><button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("rateReply", "Client", new { replyId = Model.Id, value = 1 })'">Upvote</button></div>
-                        <div class="col-1">&nbsp</div>
-                        <div><button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("rateReply", "Client", new { replyId = Model.Id, value = -1 })'">Downvote</button></div>
-                    </div>
+                <div class="col-11 text-left py-2"><h5 style="display:inline;">By: @Model.reply.ReplyAuthor.Name @Model.reply.ReplyAuthor.LastName</h5><h6 style="display:inline;">: @Model.reply.Moment</h6></div>
+                @{if (controller != "Home" && Model.reply.ReplyToWhichQuestion.Status!=0)
+                    {
+                        <div class="col-1 text-right"><button type="button" class="btn" id="@("replyButton" + Model.reply.Id)"><i class="fa fa-reply" aria-hidden="true"></i></button></div>
+                    } 
+                }
+            </div>
+            <div class="row"><div class="col"><p>@Model.reply.Text</p></div></div>
+            <div class="row">
+                <div class="col-1" style="width:auto"><button type="button" class="btn" id="@("upvoteButton" + Model.reply.Id)"><i class="fa fa-arrow-up" aria-hidden="true"></i></button></div>
+                <div class="col-1 py-2 text-left" id="@("plusGrades" + Model.reply.Id)">@Model.reply.PlusGrades</div>
+                <div class="col-1"><button type="button" id="@("downvoteButton" + Model.reply.Id)" class="btn"><i class="fa fa-arrow-down" aria-hidden="true"></i></button></div>
+                <div class="col-1 py-2 text-left" id="@("minusGrades" + Model.reply.Id)">@Model.reply.MinusGrades</div>
+            </div>
+            @{
+                Model.allReplies.Remove(Model.reply);
+                List<IEPProjekat.Models.Reply> skip = new List<IEPProjekat.Models.Reply>();
+                foreach (var reply in Model.allReplies)
+                {
+                    IEPProjekat.Models.Reply r = reply;
+                    List<IEPProjekat.Models.Reply> replies2reply = new List<IEPProjekat.Models.Reply>();
+                    replies2reply.Add(r);
+                    foreach (var reply2reply in Model.allReplies)
+                    {
+                        if (reply2reply == r || reply2reply.ReplyToWhichReply==null)
+                        {
+                            continue;
+                        }
+                        if (reply2reply.ReplyToWhichReply.Id == r.Id)
+                        {
+                            replies2reply.Add(reply2reply);
+                            skip.Add(reply2reply);
+                        }
+                        else
+                        {
+                            foreach (var replyFromList in replies2reply)
+                            {
+                                if (replyFromList.Id==reply2reply.ReplyToWhichReply.Id)
+                                {
+                                    replies2reply.Add(reply2reply);
+                                    skip.Add(reply2reply);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    IEPProjekat.Models.AnswerAnswerClass aac = new IEPProjekat.Models.AnswerAnswerClass();
+                    aac.reply = reply;
+                    aac.allReplies = replies2reply;
+                    aac.offset++;
+                    if (!skip.Contains(reply))
+                    {
+                        Html.RenderPartial("~/Views/Shared/OneReply.cshtml", new ViewDataDictionary(aac));
+                    }
+                    aac.offset--;
+                }
+            }
+            <div class="row"><div class="col" id="@("toFill"+Model.reply.Id)"></div></div>
+            <div class="row d-none" id="@("replyForm" + Model.reply.Id)">
+                <div class="col">
+                    <form name="formareply" method="get" action="giveReply">
+                        <div class="form-group">
+                            <label for="exampleFormControlTextarea1">Write response here:</label>
+                            <textarea class="form-control rounded-0" id="@("exampleFormControlTextarea" + Model.reply.Id)" name="text" rows="10"></textarea>
+                        </div>
+                        <input type="hidden" name="questionId" id="@("questionId" + Model.reply.Id)" value="@Model.reply.ReplyToWhichQuestion.Id" />
+                        <input type="hidden" name="replyId" id="@("replyId" + Model.reply.Id)" value="@Model.reply.Id" />
+                        <button type="button" class="btn btn-primary" id="@("submitReply" + Model.reply.Id)">Submit reply!</button>
+                    </form>
                 </div>
             </div>
         </div>

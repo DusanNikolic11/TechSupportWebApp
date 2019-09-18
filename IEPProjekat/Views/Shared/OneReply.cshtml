@@ -101,7 +101,7 @@
         <div class="col-@(12 - Model.offset) offset-@Model.offset border-left border-primary">
             <div class="row">
                 <div class="col-11 text-left py-2"><h5 style="display:inline;">By: @Model.reply.ReplyAuthor.Name @Model.reply.ReplyAuthor.LastName</h5><h6 style="display:inline;">: @Model.reply.Moment</h6></div>
-                @{if (controller != "Home")
+                @{if (controller != "Home" && Model.reply.ReplyToWhichQuestion.Status!=0)
                     {
                         <div class="col-1 text-right"><button type="button" class="btn" id="@("replyButton" + Model.reply.Id)"><i class="fa fa-reply" aria-hidden="true"></i></button></div>
                     } 

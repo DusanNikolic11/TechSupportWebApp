@@ -1,0 +1,158 @@
+﻿@model IEPProjekat.Models.User
+@{
+    ViewBag.Title = "allUsers";
+    Layout = "~/Views/Shared/_LayoutLoggedIn.cshtml";
+}
+
+    
+
+<div class="row py-5">
+    <div class="col">
+        <h2>List of all users</h2>
+    </div>
+</div>
+<div class="row pt-5">
+    <div class="col">
+        <table class="table table-striped">
+            <tbody class="text-center">
+                @{
+                    <tr>
+                        <th scope="row">Id</th>
+                        <td>Name</td>
+                        <td>E-Mail</td>
+                        <td>Tokens</td>
+                        <td>Status</td>
+                        <td>Role</td>
+                        <td>#</td>
+                        <td>#</td>
+                        <td>#</td>
+                    </tr>
+                    foreach (var user in ViewBag.users)
+                    {
+                        if (user.Id==1)
+                        {
+                            continue;
+                        }
+                        <tr>
+                            <th scope="row"><label id="@user.Id">@user.Id</label></th>
+                            <td><input type="text" id="@("name" + user.Id)" value="@user.Name @user.LastName" /></td>
+                            <td><input type="text" id="@("mail" + user.Id)" value="@user.Mail" /></td>
+                            <td><input type="text" id="@("tokens" + user.Id)" value="@user.Tokens" /></td>
+                            <td><label id="@("status" + user.Id)">@user.Status</label></td>
+                            <td><label id="@("role" + user.Id)">@user.Role</label></td>
+                            <td>
+                                <label id="@("promoteLabel" + user.Id)">
+                                    @{
+                                        if (user.Role == "Client")
+                                        {
+                                            <a class="promoteHref" data-value="@user.Id">Promote</a>
+                                        }
+                                        else if (user.Role == "Agent")
+                                        {
+                                            <a class="promoteHref" data-value="@user.Id">Demote</a>
+                                        }
+                                    }
+                                </label>
+                            </td>
+                            <td>
+                                <label id="@("disableLabel" + user.Id)">
+                                    @{
+                                        if (user.Status == "Active")
+                                        {
+                                            <a class="enableHref" data-value="@user.Id">Disable</a>
+                                        }
+                                        else if (user.Status == "Disabled")
+                                        {
+                                            <a class="enableHref" data-value="@user.Id">Enable</a>
+                                        }
+                                    }
+                                </label>
+                            </td>
+                            <td><button style="width:100%; height:100%;" class="btn btn-primary" type="submit" id="@user.Id">Change!</button></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".promoteHref").click(function () {
+                var id = $(this).data("value");
+                var which = $(this).text(); var newRole = ""; var newAction = "";
+                if (which == "Promote") { newRole = "Agent"; newAction = "Demote";}
+                else { newRole = "Client"; newAction = "Promote";}
+                $(this).text(newAction);
+                 $.ajax({
+                        type: "POST",
+                        url: "changeRole",
+                        data: { userId:id, newR:newRole },
+                        error: function (response) {
+                            alert("Error!");
+                        },
+                    success: function (response) {
+                        if (response.success) {
+                            $("#role" + id).text(newRole);
+                        }
+                        else {
+                            alert("Your request couldn't be completed because you've already rated this reply!");
+                        }  
+                        }
+            })
+        })
+    })
+     $(document).ready(function () {
+        $(".enableHref").click(function () {
+                var id = $(this).data("value");
+                var which = $(this).text(); var newRole = ""; var newAction = "";
+                if (which == "Enable") { newRole = "Active"; newAction = "Disable";}
+                else { newRole = "Disabled"; newAction = "Enable";}
+                $(this).text(newAction);
+                 $.ajax({
+                        type: "POST",
+                        url: "changeStatus",
+                        data: { userId:id, newR:newRole },
+                        error: function (response) {
+                            alert("Error!");
+                        },
+                    success: function (response) {
+                        if (response.success) {
+                            $("#status" + id).text(newRole);
+                        }
+                        else {
+                            alert("Your request couldn't be completed because you've already rated this reply!");
+                        }  
+                        }
+            })
+        })
+     })
+
+    $(document).ready(function () {
+        $(".btn").click(function () {
+            var id = $(this).attr("id");
+            var name = $("#name"+id).val();
+            var email = $("#mail" + id).val();
+            var tokens = $("#tokens" + id).val();
+            $.ajax({
+                type: "POST",
+                url: "changeEverything",
+                data: { userId:id, newName:name, newEmail:email, newTokens:tokens },
+                error: function (response) {
+                    alert("Error!");
+                },
+            success: function (response) {
+                if (response.success) {
+                    alert("Changes successfuly commited to database");
+                }
+                else {
+                    alert("Your request couldn't be completed because you've already rated this reply!");
+                }  
+                }
+            })
+        })
+    })
+</script>    
+

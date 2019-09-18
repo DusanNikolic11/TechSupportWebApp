@@ -71,7 +71,7 @@ namespace IEPProjekat.Controllers
                 if (password==password_confirmation)
                 {
                     String hashedPassword = hashPassword(password);
-                    User newUser = new User { Name = first_name, LastName = last_name, Mail = email, Password = hashedPassword, Role="Client", Status="Active" };
+                    User newUser = new User { Name = first_name, LastName = last_name, Mail = email, Password = hashedPassword, Role="Client", Status="Active", Channels=new List<Channel>() };
                     db.users.Add(newUser);
                     db.SaveChanges();
                     return View("Login");

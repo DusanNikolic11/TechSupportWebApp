@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using IEPProjekat;
 using IEPProjekat.Models;
@@ -205,6 +206,7 @@ namespace IEPProjekat.Controllers
         public ActionResult lockQuestion(int questionId)
         {
             Question q = db.questions.ToList().Find(x => x.Id == questionId);
+            q.LastLockTime = DateTime.Now;
             q.Status = 0;
             db.SaveChanges();
             return RedirectToAction("openQuestion", new { index = questionId });
@@ -441,6 +443,13 @@ namespace IEPProjekat.Controllers
 
         public ActionResult openChannelsPage()
         {
+            User u = (User)Session["user"];
+            ChannelSetupClass csc = new ChannelSetupClass { channels = new List<Channel>(), setup = db.setup.ToList().Find(x => x.Id == 1)};
+            if (u.Role == "Client")
+            {
+                csc.channels = db.channels.ToList().FindAll(x => x.UserOpener.Id == u.Id);
+            }
+            ViewBag.returnVal = csc;
             return View("../Shared/ChannelWindow");
         }
 
@@ -510,6 +519,31 @@ namespace IEPProjekat.Controllers
             q.allReplies = replies;
             ViewBag.returnVal = q;
             return View("questionThread");
+        }
+
+        public ActionResult createChannel()
+        {
+            DateTime dt = DateTime.Now;
+            Channel c = new Channel { UserOpener = (User)Session["user"], Agents = new List<User>(), NumberOfAgents=0, Moment=dt, Questions = new List<Question>(), Status = 1, Price = db.setup.ToList().Find(x => x.Id == 1).ChannelAmountSilver };
+            db.channels.Add(c);
+            ((User)Session["user"]).Channels.Add(c);
+            ((User)Session["user"]).Tokens -= db.setup.ToList().Find(x => x.Id == 1).ChannelAmountSilver;
+            db.SaveChanges();
+            return RedirectToAction("openChannelsPage");
+        }
+
+        [HttpGet]
+        public JsonResult getMessages(String channelId)
+        {
+            int id = int.Parse(channelId);
+            List<Question> questions = db.channels.ToList().Find(x => x.Id == id).Questions.ToList();
+            String d = "";
+            foreach (var q in questions)
+            {
+                d += q.Author.Name + ";" + q.Author.LastName + ";" + q.Text + ";";
+            }
+            JsonResult j = Json(new { success = true, answer = d }, JsonRequestBehavior.AllowGet);
+            return j;
         }
     }
 }
